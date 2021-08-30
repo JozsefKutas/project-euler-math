@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "project-euler-math"
+version = "1.0.0"
+description = "A library of maths functions used to solve Project Euler problems, written in pure Python"
+authors = ["Jozsef <jozsef1729@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+
+[tool.poetry.dev-dependencies]
+pytest = "^5.2"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
