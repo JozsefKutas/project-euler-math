@@ -96,7 +96,7 @@ class Gaussian(Complex):
             y1 = self.y
             x2 = other.x
             y2 = other.y
-            return Gaussian(x1 * x2 - y1 * y2, x1 * y2 + y2 * x2)
+            return Gaussian(x1 * x2 - y1 * y2, x1 * y2 + y1 * x2)
         elif isinstance(other, Integral):
             return Gaussian(self.x * other, self.y * other)
         else:
