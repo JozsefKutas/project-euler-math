@@ -190,6 +190,17 @@ class Polynomial(Generic[T]):
     def __call__(self, x: T) -> T:
         return reduce(lambda a, b: a*x + b, reversed(self._coeffs), 0)
 
+    def deriv(self) -> Polynomial[T]:
+        return self._create([i*a for i, a in enumerate(self._coeffs)][1:])
+
+    def antideriv(self) -> Polynomial[T]:
+        zero = _zero(self.leading_coeff)
+        return self._create([zero] + [a/i for i, a in enumerate(self._coeffs, 1)])
+
+    def integral(self, a: T, b: T) -> T:
+        antideriv = self.antideriv()
+        return antideriv(b) - antideriv(a)
+
     def __str__(self) -> str:
         monomial_strs = []
         for i, a in enumerate(self._coeffs):
