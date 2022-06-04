@@ -1,13 +1,11 @@
-from typing import Callable, Tuple, Optional
+from typing import Callable, Optional
 
 
 def newton_raphson(f: Callable[..., float],
                    fprime: Callable[..., float],
-                   x0: float, args: Optional[Tuple] = None,
+                   x0: float, args: tuple = (),
                    tol: float = 1e-8, maxiter: int = 50):
     """Searches for the root of `f` using the Newton-Raphson algorithm."""
-
-    args = args or ()
 
     for _ in range(maxiter):
         y0 = f(x0, *args)
@@ -25,12 +23,9 @@ def newton_raphson(f: Callable[..., float],
 
 
 def secant(f: Callable[..., float],
-           x0: float, x1: Optional[float] = None,
-           args: Optional[Tuple] = None,
+           x0: float, x1: Optional[float] = None, args: tuple = (),
            tol: float = 1e-8, maxiter: int = 50):
     """Searches for the root of `f` using the secant algorithm."""
-
-    args = args or ()
 
     if x1 is None:
         eps = 1e-4
@@ -53,11 +48,9 @@ def secant(f: Callable[..., float],
 
 
 def bisect(f: Callable[..., float],
-           a: float, b: float, args: Optional[Tuple] = None,
+           a: float, b: float, args: tuple = (),
            tol: float = 1e-8, maxiter: int = 100):
     """Searches for the root of `f` using bisection search."""
-
-    args = args or ()
 
     fa = f(a, *args)
     fb = f(b, *args)

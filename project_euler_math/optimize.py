@@ -1,15 +1,13 @@
-from typing import Callable, Tuple, Optional
+from typing import Callable, Optional
 
 from project_euler_math.matrix import Vector
 
 
 def nelder_mead(f: Callable[..., float], x0: Vector,
                 deltas: Optional[Vector] = None, scale=1.,
-                args: Optional[Tuple] = None,
+                args: tuple = (),
                 ftol: float = 1e-12, maxiter: int = 1000):
     """Searches for the minimum value of `f` using the Nelder-Mead algorithm."""
-
-    args = args or ()
 
     reflect_factor = -1.
     expand_factor = -2.

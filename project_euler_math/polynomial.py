@@ -3,9 +3,10 @@ from __future__ import annotations
 from math import inf
 from numbers import Integral
 from functools import reduce
-from typing import Union, List, TypeVar, Generic, Iterable, Tuple
+from typing import Union, List, TypeVar, Generic, Iterable, Tuple, Callable
 
 T = TypeVar('T')
+R = TypeVar('R')
 
 _PolynomialKey = Union[int, slice]
 
@@ -34,6 +35,8 @@ class Polynomial(Generic[T]):
     def _create(cls, coeffs):
         self = cls.__new__(cls)
         self._coeffs = coeffs
+        while self._coeffs and not self._coeffs[-1]:
+            self._coeffs.pop()
         return self
 
     def __init__(self, coeffs: Union[None, Polynomial[T], Iterable[T]] = None) -> None:
@@ -181,15 +184,38 @@ class Polynomial(Generic[T]):
     def __pos__(self) -> Polynomial[T]:
         return self._create([+a for a in self._coeffs])
 
-    def __str__(self) -> str:
-        return ' + '.join(
-            f'{a!r}*x**{i}' for i, a in enumerate(self._coeffs) if a)
-
-    def __repr__(self) -> str:
-        return type(self).__name__ + f'({self._coeffs!r})'
+    def map(self, f: Callable[[T], R]) -> Polynomial[R]:
+        return self._create([f(a) for a in self])
 
     def __call__(self, x: T) -> T:
         return reduce(lambda a, b: a*x + b, reversed(self._coeffs), 0)
+
+    def deriv(self) -> Polynomial[T]:
+        return self._create([i*a for i, a in enumerate(self._coeffs)][1:])
+
+    def antideriv(self) -> Polynomial[T]:
+        zero = _zero(self.leading_coeff)
+        return self._create([zero] + [a/i for i, a in enumerate(self._coeffs, 1)])
+
+    def integral(self, a: T, b: T) -> T:
+        antideriv = self.antideriv()
+        return antideriv(b) - antideriv(a)
+
+    def __str__(self) -> str:
+        monomial_strs = []
+        for i, a in enumerate(self._coeffs):
+            if a:
+                if i == 0:
+                    monomial_str = f'{a!r}'
+                elif i == 1:
+                    monomial_str = f'{a!r}*x'
+                else:
+                    monomial_str = f'{a!r}*x**{i}'
+                monomial_strs.append(monomial_str)
+        return ' + '.join(monomial_strs)
+
+    def __repr__(self) -> str:
+        return type(self).__name__ + f'({self._coeffs!r})'
 
 
 def _zero(n):
