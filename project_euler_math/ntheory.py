@@ -63,14 +63,6 @@ def is_square(n: int) -> bool:
             and _is_square65[n % 65] and isqrt(n) ** 2 == n)
 
 
-def mathlcm(m: int, n: int) -> int:
-    """Return the non-negative lowest common multiple of integers `m` and
-    `n`."""
-    if m == n == 0:
-        return 0
-    return m * n // mathgcd(m, n)
-
-
 def gcd(m: E, n: E) -> E:
     """Return the non-negative greatest common divisor of integers `m` and
     `n`."""

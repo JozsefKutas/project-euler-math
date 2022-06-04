@@ -1,10 +1,11 @@
 from collections import Counter
 from itertools import product
+from math import gcd as mathgcd, lcm as mathlcm
 
 import pytest
 
 from project_euler_math.ntheory import (
-    inrt, is_square, gcd, mathgcd, lcm, mathlcm, bezout, mod_inverse,
+    inrt, is_square, gcd, lcm, bezout, mod_inverse,
     crt2, crt2_noncoprime, farey_sequence, left_farey, right_farey,
     jacobi, tonelli_shanks, is_prime, divisors, factorisation,
     omega, omega_list, ndiv_list, ndiv, sigma, sigma_list,
