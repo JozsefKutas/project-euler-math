@@ -69,6 +69,7 @@ class Gaussian(Complex):
         return bool(self._x) or bool(self._y)
 
     def conjugate(self) -> Gaussian:
+        # noinspection PyTypeChecker
         return Gaussian(self.x, -self.y)
 
     def norm(self) -> Integral:
@@ -78,6 +79,7 @@ class Gaussian(Complex):
         if isinstance(other, Gaussian):
             return Gaussian(self.x + other.x, self.y + other.y)
         elif isinstance(other, Integral):
+            # noinspection PyTypeChecker
             return Gaussian(self.x + other, self.y)
         else:
             return NotImplemented
@@ -86,6 +88,7 @@ class Gaussian(Complex):
         if isinstance(other, Gaussian):
             return Gaussian(self.x - other.x, self.y - other.y)
         elif isinstance(other, Integral):
+            # noinspection PyTypeChecker
             return Gaussian(self.x - other, self.y)
         else:
             return NotImplemented
@@ -165,6 +168,7 @@ class Gaussian(Complex):
 
     def __radd__(self, other: Integral | Complex) -> Gaussian | complex:
         if isinstance(other, Integral):
+            # noinspection PyTypeChecker
             return Gaussian(other + self.x, self.y)
         elif isinstance(other, Complex):
             return complex(other) + complex(self)

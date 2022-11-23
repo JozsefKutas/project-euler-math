@@ -83,6 +83,7 @@ class Eisenstein(Complex):
         if isinstance(other, Eisenstein):
             return Eisenstein(self.x + other.x, self.y + other.y)
         elif isinstance(other, Integral):
+            # noinspection PyTypeChecker
             return Eisenstein(self.x + other, self.y)
         else:
             return NotImplemented
@@ -91,6 +92,7 @@ class Eisenstein(Complex):
         if isinstance(other, Eisenstein):
             return Eisenstein(self.x - other.x, self.y - other.y)
         elif isinstance(other, Integral):
+            # noinspection PyTypeChecker
             return Eisenstein(self.x - other, self.y)
         else:
             return NotImplemented
@@ -108,7 +110,7 @@ class Eisenstein(Complex):
             return NotImplemented
 
     def __truediv__(self, other: Complex) -> Complex:
-        if isinstance(other, complex):
+        if isinstance(other, Complex):
             return complex(self) / other
         else:
             return NotImplemented
@@ -170,6 +172,7 @@ class Eisenstein(Complex):
 
     def __radd__(self, other: Integral | Complex) -> Eisenstein | complex:
         if isinstance(other, Integral):
+            # noinspection PyTypeChecker
             return Eisenstein(other + self.x, self.y)
         elif isinstance(other, Complex):
             return other + complex(self)
