@@ -192,6 +192,12 @@ class Fraction(Generic[E]):
     def __abs__(self) -> Fraction[E]:
         return Fraction(abs(self._p), abs(self._q))
 
+    def __int__(self) -> int:
+        return self._p // self._q if self._p >= 0 else -(-self._p // self._q)
+
+    def __float__(self) -> Fraction[E]:
+        return self._p / self._q
+
     def __str__(self) -> str:
         return f'{self.p!r}/{self.q!r}'
 
