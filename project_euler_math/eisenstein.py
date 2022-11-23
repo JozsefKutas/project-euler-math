@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from math import sqrt
 from numbers import Integral, Real, Complex
-from typing import Union, Tuple
+from typing import Tuple
 
 _SQRT3 = sqrt(3)
 
@@ -37,8 +37,8 @@ class Eisenstein(Complex):
 
     def __init__(
             self,
-            x: Union[Integral, Eisenstein] = 0,
-            y: Union[Integral, Eisenstein] = 0):
+            x: Integral | Eisenstein = 0,
+            y: Integral | Eisenstein = 0):
 
         self._x = 0
         self._y = 0
@@ -79,7 +79,7 @@ class Eisenstein(Complex):
     def norm(self) -> Integral:
         return self.x * self.x - self.x * self.y + self.y * self.y
 
-    def __add__(self, other: Union[Integral, Eisenstein]) -> Eisenstein:
+    def __add__(self, other: Integral | Eisenstein) -> Eisenstein:
         if isinstance(other, Eisenstein):
             return Eisenstein(self.x + other.x, self.y + other.y)
         elif isinstance(other, Integral):
@@ -87,7 +87,7 @@ class Eisenstein(Complex):
         else:
             return NotImplemented
 
-    def __sub__(self, other: Union[Integral, Eisenstein]) -> Eisenstein:
+    def __sub__(self, other: Integral | Eisenstein) -> Eisenstein:
         if isinstance(other, Eisenstein):
             return Eisenstein(self.x - other.x, self.y - other.y)
         elif isinstance(other, Integral):
@@ -95,7 +95,7 @@ class Eisenstein(Complex):
         else:
             return NotImplemented
 
-    def __mul__(self, other: Union[Integral, Eisenstein]) -> Eisenstein:
+    def __mul__(self, other: Integral | Eisenstein) -> Eisenstein:
         if isinstance(other, Eisenstein):
             x1 = self.x
             y1 = self.y
@@ -116,7 +116,7 @@ class Eisenstein(Complex):
     def __div__(self, other: Complex) -> Complex:
         return self.__truediv__(other)
 
-    def __floordiv__(self, other: Union[Integral, Eisenstein]) -> Eisenstein:
+    def __floordiv__(self, other: Integral | Eisenstein) -> Eisenstein:
         if isinstance(other, Eisenstein):
             x1 = self.x
             y1 = self.y
@@ -136,14 +136,14 @@ class Eisenstein(Complex):
         else:
             return NotImplemented
 
-    def __mod__(self, other: Union[Integral, Eisenstein]) -> Eisenstein:
+    def __mod__(self, other: Integral | Eisenstein) -> Eisenstein:
         div = self.__floordiv__(other)
         if div is NotImplemented:
             return NotImplemented
         else:
             return self - div * other
 
-    def __divmod__(self, other: Union[Integral, Eisenstein])\
+    def __divmod__(self, other: Integral | Eisenstein)\
             -> Tuple[Eisenstein, Eisenstein]:
         div = self.__floordiv__(other)
         if div is NotImplemented:
@@ -168,7 +168,7 @@ class Eisenstein(Complex):
         else:
             return NotImplemented
 
-    def __radd__(self, other: Union[Integral, Complex]) -> Union[Eisenstein, complex]:
+    def __radd__(self, other: Integral | Complex) -> Eisenstein | complex:
         if isinstance(other, Integral):
             return Eisenstein(other + self.x, self.y)
         elif isinstance(other, Complex):
@@ -176,7 +176,7 @@ class Eisenstein(Complex):
         else:
             return NotImplemented
 
-    def __rsub__(self, other: Union[Integral, Complex]) -> Union[Eisenstein, complex]:
+    def __rsub__(self, other: Integral | Complex) -> Eisenstein | complex:
         if isinstance(other, Integral):
             return Eisenstein(other - self.x, -self.y)
         elif isinstance(other, Complex):
@@ -184,7 +184,7 @@ class Eisenstein(Complex):
         else:
             return NotImplemented
 
-    def __rmul__(self, other: Union[Integral, Complex]) -> Union[Eisenstein, complex]:
+    def __rmul__(self, other: Integral | Complex) -> Eisenstein | complex:
         if isinstance(other, Integral):
             return Eisenstein(other * self.x, other * self.y)
         elif isinstance(other, Complex):

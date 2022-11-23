@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from numbers import Rational, Integral
-from typing import Generic, TypeVar, Union, Tuple
+from typing import Generic, TypeVar, Tuple
 
 from project_euler_math.ntheory import gcd
 from project_euler_math.eisenstein import Eisenstein
@@ -38,8 +38,8 @@ class Fraction(Generic[E]):
         return self._q
 
     def __init__(self,
-                 p: Union[E, Fraction[E], Rational] = 0,
-                 q: Union[E, Fraction[E], Rational] = 1) -> None:
+                 p: E | Fraction[E] | Rational = 0,
+                 q: E | Fraction[E] | Rational = 1) -> None:
 
         if isinstance(p, (Fraction, Rational)):
             if isinstance(q, (Fraction, Rational)):
@@ -72,7 +72,7 @@ class Fraction(Generic[E]):
     def __bool__(self) -> bool:
         return bool(self._p)
 
-    def __add__(self, other: Union[E, Fraction[E], Rational]) -> Fraction[E]:
+    def __add__(self, other: E | Fraction[E] | Rational) -> Fraction[E]:
         if isinstance(other, (Fraction, Rational)):
             return Fraction(
                 self._p * other.denominator + other.numerator * self._q,
@@ -80,7 +80,7 @@ class Fraction(Generic[E]):
         else:
             return Fraction(self._p + other.numerator * self._q, self._q)
 
-    def __sub__(self, other: Union[E, Fraction[E], Rational]) -> Fraction[E]:
+    def __sub__(self, other: E | Fraction[E] | Rational) -> Fraction[E]:
         if isinstance(other, (Fraction, Rational)):
             return Fraction(
                 self._p * other.denominator - other.numerator * self._q,
@@ -88,27 +88,27 @@ class Fraction(Generic[E]):
         else:
             return Fraction(self._p - other.numerator * self._q, self._q)
 
-    def __mul__(self, other: Union[E, Fraction[E], Rational]) -> Fraction[E]:
+    def __mul__(self, other: E | Fraction[E] | Rational) -> Fraction[E]:
         if isinstance(other, (Fraction, Rational)):
             return Fraction(self._p * other.numerator,
                             self._q * other.denominator)
         else:
             return Fraction(self._p * other.numerator, self._q)
 
-    def __truediv__(self, other: Union[E, Fraction[E], Rational]) -> Fraction[E]:
+    def __truediv__(self, other: E | Fraction[E] | Rational) -> Fraction[E]:
         if isinstance(other, (Fraction, Rational)):
             return Fraction(self._p * other.denominator,
                             self._q * other.numerator)
         else:
             return Fraction(self._p, self._q * other.numerator)
 
-    def __floordiv__(self, other: Union[E, Fraction[E], Rational]) -> Fraction[E]:
+    def __floordiv__(self, other: E | Fraction[E] | Rational) -> Fraction[E]:
         if isinstance(other, (Fraction, Rational)):
             return (self._p * other.denominator) // (other.numerator * self._q)
         else:
             return self._p // (other.numerator * self._q)
 
-    def __mod__(self, other: Union[E, Fraction[E], Rational]) -> Fraction[E]:
+    def __mod__(self, other: E | Fraction[E] | Rational) -> Fraction[E]:
         if isinstance(other, (Fraction, Rational)):
             return Fraction(
                 (self._p * other.denominator) % (other.numerator * self._q),
@@ -116,7 +116,7 @@ class Fraction(Generic[E]):
         else:
             return Fraction(self._p % (other.numerator * self._q), self._q)
 
-    def __divmod__(self, other: Union[E, Fraction[E], Rational])\
+    def __divmod__(self, other: E | Fraction[E] | Rational)\
             -> Tuple[Fraction[E], Fraction[E]]:
         if isinstance(other, (Fraction, Rational)):
             div, rem = divmod(self._p * other.denominator,
@@ -129,7 +129,7 @@ class Fraction(Generic[E]):
     def __pow__(self, power: Integral) -> Fraction[E]:
         return Fraction(self._p ** power, self._q ** power)
 
-    def __radd__(self, other: Union[E, Rational]) -> Fraction[E]:
+    def __radd__(self, other: E | Rational) -> Fraction[E]:
         if isinstance(other, Rational):
             return Fraction(
                 other.numerator * self._q + self._p * other.denominator,
@@ -137,7 +137,7 @@ class Fraction(Generic[E]):
         else:
             return Fraction(other.numerator * self._q + self._p, self._q)
 
-    def __rsub__(self, other: Union[E, Rational]) -> Fraction[E]:
+    def __rsub__(self, other: E | Rational) -> Fraction[E]:
         if isinstance(other, Rational):
             return Fraction(
                 other.numerator * self._q - self._p * other.denominator,
@@ -145,27 +145,27 @@ class Fraction(Generic[E]):
         else:
             return Fraction(other.numerator * self._q - self._p, self._q)
 
-    def __rmul__(self, other: Union[E, Rational]) -> Fraction[E]:
+    def __rmul__(self, other: E | Rational) -> Fraction[E]:
         if isinstance(other, Rational):
             return Fraction(other.numerator * self._p,
                             other.denominator * self._q)
         else:
             return Fraction(other.numerator * self._p, self._q)
 
-    def __rtruediv__(self, other: Union[E, Rational]) -> Fraction[E]:
+    def __rtruediv__(self, other: E | Rational) -> Fraction[E]:
         if isinstance(other, Rational):
             return Fraction(other.numerator * self._q,
                             other.denominator * self._p)
         else:
             return Fraction(other * self._q, self._p)
 
-    def __rfloordiv__(self, other: Union[E, Rational]) -> Fraction[E]:
+    def __rfloordiv__(self, other: E | Rational) -> Fraction[E]:
         if isinstance(other, Rational):
             return (other.numerator * self._q) // (self._p * other.denominator)
         else:
             return (other * self._q) // self._p
 
-    def __rmod__(self, other: Union[E, Rational]) -> Fraction[E]:
+    def __rmod__(self, other: E | Rational) -> Fraction[E]:
         if isinstance(other, Rational):
             return Fraction(
                 (other.numerator * self._q) % (self._p * other.denominator),
@@ -173,8 +173,7 @@ class Fraction(Generic[E]):
         else:
             return Fraction((other * self._q) % self._p, self._q)
 
-    def __rdivmod__(self, other: Union[E, Rational])\
-            -> Tuple[Fraction[E], Fraction[E]]:
+    def __rdivmod__(self, other: E | Rational) -> Tuple[Fraction[E], Fraction[E]]:
         if isinstance(other, Rational):
             div, rem = divmod(other.numerator * self._q,
                               self._p * other.denominator)

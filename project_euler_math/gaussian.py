@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from numbers import Integral, Complex
-from typing import Union, Tuple
+from typing import Tuple
 
 
 class Gaussian(Complex):
@@ -33,8 +33,8 @@ class Gaussian(Complex):
 
     def __init__(
             self,
-            x: Union[Integral, Gaussian] = 0,
-            y: Union[Integral, Gaussian] = 0) -> None:
+            x: Integral | Gaussian = 0,
+            y: Integral | Gaussian = 0) -> None:
 
         self._x = 0
         self._y = 0
@@ -74,7 +74,7 @@ class Gaussian(Complex):
     def norm(self) -> Integral:
         return self.x * self.x + self.y * self.y
 
-    def __add__(self, other: Union[Integral, Gaussian]) -> Gaussian:
+    def __add__(self, other: Integral | Gaussian) -> Gaussian:
         if isinstance(other, Gaussian):
             return Gaussian(self.x + other.x, self.y + other.y)
         elif isinstance(other, Integral):
@@ -82,7 +82,7 @@ class Gaussian(Complex):
         else:
             return NotImplemented
 
-    def __sub__(self, other: Union[Integral, Gaussian]) -> Gaussian:
+    def __sub__(self, other: Integral | Gaussian) -> Gaussian:
         if isinstance(other, Gaussian):
             return Gaussian(self.x - other.x, self.y - other.y)
         elif isinstance(other, Integral):
@@ -90,7 +90,7 @@ class Gaussian(Complex):
         else:
             return NotImplemented
 
-    def __mul__(self, other: Union[Integral, Gaussian]) -> Gaussian:
+    def __mul__(self, other: Integral | Gaussian) -> Gaussian:
         if isinstance(other, Gaussian):
             x1 = self.x
             y1 = self.y
@@ -111,7 +111,7 @@ class Gaussian(Complex):
     def __div__(self, other: Complex) -> Complex:
         return self.__truediv__(other)
 
-    def __floordiv__(self, other: Union[Integral, Gaussian]) -> Gaussian:
+    def __floordiv__(self, other: Integral | Gaussian) -> Gaussian:
         if isinstance(other, Gaussian):
             x1 = self.x
             y1 = self.y
@@ -131,14 +131,14 @@ class Gaussian(Complex):
         else:
             return NotImplemented
 
-    def __mod__(self, other: Union[Integral, Gaussian]) -> Gaussian:
+    def __mod__(self, other: Integral | Gaussian) -> Gaussian:
         div = self.__floordiv__(other)
         if div is NotImplemented:
             return NotImplemented
         else:
             return self - div * other
 
-    def __divmod__(self, other: Union[Integral, Gaussian])\
+    def __divmod__(self, other: Integral | Gaussian)\
             -> Tuple[Gaussian, Gaussian]:
         div = self.__floordiv__(other)
         if div is NotImplemented:
@@ -163,7 +163,7 @@ class Gaussian(Complex):
         else:
             return NotImplemented
 
-    def __radd__(self, other: Union[Integral, Complex]) -> Union[Gaussian, complex]:
+    def __radd__(self, other: Integral | Complex) -> Gaussian | complex:
         if isinstance(other, Integral):
             return Gaussian(other + self.x, self.y)
         elif isinstance(other, Complex):
@@ -171,7 +171,7 @@ class Gaussian(Complex):
         else:
             return NotImplemented
 
-    def __rsub__(self, other: Union[Integral, Complex]) -> Union[Gaussian, complex]:
+    def __rsub__(self, other: Integral | Complex) -> Gaussian | complex:
         if isinstance(other, Integral):
             return Gaussian(other - self.x, -self.y)
         elif isinstance(other, Complex):
@@ -179,7 +179,7 @@ class Gaussian(Complex):
         else:
             return NotImplemented
 
-    def __rmul__(self, other: Union[Integral, Complex]) -> Union[Gaussian, complex]:
+    def __rmul__(self, other: Integral | Complex) -> Gaussian | complex:
         if isinstance(other, Integral):
             return Gaussian(other * self.x, other * self.y)
         elif isinstance(other, Complex):

@@ -9,14 +9,13 @@ from operator import (
     rshift, and_, xor, or_, neg, pos, invert)
 from abc import ABC, abstractmethod
 from typing import (
-    TypeVar, Tuple, List, Union, Iterator, Generic, Iterable, Callable,
-    Sequence)
+    TypeVar, Tuple, List, Iterator, Generic, Iterable, Callable, Sequence)
 
 T = TypeVar('T')
 R = TypeVar('R')
 
-_VectorKey = Union[int, slice]
-_MatrixKey = Tuple[Union[int, slice], Union[int, slice]]
+_VectorKey = int | slice
+_MatrixKey = Tuple[int | slice, int | slice]
 
 
 def _zero(n):
@@ -63,7 +62,7 @@ class BaseVector(ABC, Generic[T]):
         raise NotImplementedError
 
     @abstractmethod
-    def __getitem__(self, key: _VectorKey) -> Union[T, BaseVector[T]]:
+    def __getitem__(self, key: _VectorKey) -> T | BaseVector[T]:
         raise NotImplementedError
 
     @abstractmethod
@@ -93,58 +92,58 @@ class BaseVector(ABC, Generic[T]):
     def _right_op(self, other, op):
         raise NotImplementedError
 
-    def __lt__(self, other: Union[T, BaseVector[T]]) -> BaseVector[bool]:
+    def __lt__(self, other: T | BaseVector[T]) -> BaseVector[bool]:
         return self._left_op(other, lt)
 
-    def __le__(self, other: Union[T, BaseVector[T]]) -> BaseVector[bool]:
+    def __le__(self, other: T | BaseVector[T]) -> BaseVector[bool]:
         return self._left_op(other, le)
 
-    def __eq__(self, other: Union[T, BaseVector[T]]) -> BaseVector[bool]:
+    def __eq__(self, other: T | BaseVector[T]) -> BaseVector[bool]:
         return self._left_op(other, eq)
 
-    def __ne__(self, other: Union[T, BaseVector[T]]) -> BaseVector[bool]:
+    def __ne__(self, other: T | BaseVector[T]) -> BaseVector[bool]:
         return self._left_op(other, ne)
 
-    def __ge__(self, other: Union[T, BaseVector[T]]) -> BaseVector[bool]:
+    def __ge__(self, other: T | BaseVector[T]) -> BaseVector[bool]:
         return self._left_op(other, ge)
 
-    def __gt__(self, other: Union[T, BaseVector[T]]) -> BaseVector[bool]:
+    def __gt__(self, other: T | BaseVector[T]) -> BaseVector[bool]:
         return self._left_op(other, gt)
 
-    def __add__(self, other: Union[T, BaseVector[T]]) -> BaseVector[T]:
+    def __add__(self, other: T | BaseVector[T]) -> BaseVector[T]:
         return self._left_op(other, add)
 
-    def __sub__(self, other: Union[T, BaseVector[T]]) -> BaseVector[T]:
+    def __sub__(self, other: T | BaseVector[T]) -> BaseVector[T]:
         return self._left_op(other, sub)
 
-    def __mul__(self, other: Union[T, BaseVector[T]]) -> BaseVector[T]:
+    def __mul__(self, other: T | BaseVector[T]) -> BaseVector[T]:
         return self._left_op(other, mul)
 
-    def __truediv__(self, other: Union[T, BaseVector[T]]) -> BaseVector[T]:
+    def __truediv__(self, other: T | BaseVector[T]) -> BaseVector[T]:
         return self._left_op(other, truediv)
 
-    def __floordiv__(self, other: Union[T, BaseVector[T]]) -> BaseVector[T]:
+    def __floordiv__(self, other: T | BaseVector[T]) -> BaseVector[T]:
         return self._left_op(other, floordiv)
 
-    def __mod__(self, other: Union[T, BaseVector[T]]) -> BaseVector[T]:
+    def __mod__(self, other: T | BaseVector[T]) -> BaseVector[T]:
         return self._left_op(other, mod)
 
-    def __pow__(self, power: Union[T, BaseVector[T]]) -> BaseVector[T]:
+    def __pow__(self, power: T | BaseVector[T]) -> BaseVector[T]:
         return self._left_op(power, pow)
 
-    def __lshift__(self, other: Union[T, BaseVector[T]]) -> BaseVector[T]:
+    def __lshift__(self, other: T | BaseVector[T]) -> BaseVector[T]:
         return self._left_op(other, lshift)
 
-    def __rshift__(self, other: Union[T, BaseVector[T]]) -> BaseVector[T]:
+    def __rshift__(self, other: T | BaseVector[T]) -> BaseVector[T]:
         return self._left_op(other, rshift)
 
-    def __and__(self, other: Union[T, BaseVector[T]]) -> BaseVector[T]:
+    def __and__(self, other: T | BaseVector[T]) -> BaseVector[T]:
         return self._left_op(other, and_)
 
-    def __xor__(self, other: Union[T, BaseVector[T]]) -> BaseVector[T]:
+    def __xor__(self, other: T | BaseVector[T]) -> BaseVector[T]:
         return self._left_op(other, xor)
 
-    def __or__(self, other: Union[T, BaseVector[T]]) -> BaseVector[T]:
+    def __or__(self, other: T | BaseVector[T]) -> BaseVector[T]:
         return self._left_op(other, or_)
 
     def __radd__(self, other: T) -> BaseVector[T]:
@@ -402,7 +401,7 @@ class BaseMatrix(ABC, Generic[T]):
         raise NotImplementedError
 
     @abstractmethod
-    def __getitem__(self, key: _MatrixKey) -> Union[T, BaseVector[T], BaseMatrix[T]]:
+    def __getitem__(self, key: _MatrixKey) -> T | BaseVector[T] | BaseMatrix[T]:
         raise NotImplementedError
 
     @abstractmethod
@@ -464,58 +463,58 @@ class BaseMatrix(ABC, Generic[T]):
     def _right_op(self, other, op):
         raise NotImplementedError
 
-    def __lt__(self, other: Union[T, BaseMatrix[T]]) -> BaseMatrix[bool]:
+    def __lt__(self, other: T | BaseMatrix[T]) -> BaseMatrix[bool]:
         return self._left_op(other, lt)
 
-    def __le__(self, other: Union[T, BaseMatrix[T]]) -> BaseMatrix[bool]:
+    def __le__(self, other: T | BaseMatrix[T]) -> BaseMatrix[bool]:
         return self._left_op(other, le)
 
-    def __eq__(self, other: Union[T, BaseMatrix[T]]) -> BaseMatrix[bool]:
+    def __eq__(self, other: T | BaseMatrix[T]) -> BaseMatrix[bool]:
         return self._left_op(other, eq)
 
-    def __ne__(self, other: Union[T, BaseMatrix[T]]) -> BaseMatrix[bool]:
+    def __ne__(self, other: T | BaseMatrix[T]) -> BaseMatrix[bool]:
         return self._left_op(other, ne)
 
-    def __ge__(self, other: Union[T, BaseMatrix[T]]) -> BaseMatrix[bool]:
+    def __ge__(self, other: T | BaseMatrix[T]) -> BaseMatrix[bool]:
         return self._left_op(other, ge)
 
-    def __gt__(self, other: Union[T, BaseMatrix[T]]) -> BaseMatrix[bool]:
+    def __gt__(self, other: T | BaseMatrix[T]) -> BaseMatrix[bool]:
         return self._left_op(other, gt)
 
-    def __add__(self, other: Union[T, BaseMatrix[T]]) -> BaseMatrix[T]:
+    def __add__(self, other: T | BaseMatrix[T]) -> BaseMatrix[T]:
         return self._left_op(other, add)
 
-    def __sub__(self, other: Union[T, BaseMatrix[T]]) -> BaseMatrix[T]:
+    def __sub__(self, other: T | BaseMatrix[T]) -> BaseMatrix[T]:
         return self._left_op(other, sub)
 
-    def __mul__(self, other: Union[T, BaseMatrix[T]]) -> BaseMatrix[T]:
+    def __mul__(self, other: T | BaseMatrix[T]) -> BaseMatrix[T]:
         return self._left_op(other, mul)
 
-    def __truediv__(self, other: Union[T, BaseMatrix[T]]) -> BaseMatrix[T]:
+    def __truediv__(self, other: T | BaseMatrix[T]) -> BaseMatrix[T]:
         return self._left_op(other, truediv)
 
-    def __floordiv__(self, other: Union[T, BaseMatrix[T]]) -> BaseMatrix[T]:
+    def __floordiv__(self, other: T | BaseMatrix[T]) -> BaseMatrix[T]:
         return self._left_op(other, floordiv)
 
-    def __mod__(self, other: Union[T, BaseMatrix[T]]) -> BaseMatrix[T]:
+    def __mod__(self, other: T | BaseMatrix[T]) -> BaseMatrix[T]:
         return self._left_op(other, mod)
 
-    def __pow__(self, power: Union[T, BaseMatrix[T]]) -> BaseMatrix[T]:
+    def __pow__(self, power: T | BaseMatrix[T]) -> BaseMatrix[T]:
         return self._left_op(power, pow)
 
-    def __lshift__(self, other: Union[T, BaseMatrix[T]]) -> BaseMatrix[T]:
+    def __lshift__(self, other: T | BaseMatrix[T]) -> BaseMatrix[T]:
         return self._left_op(other, lshift)
 
-    def __rshift__(self, other: Union[T, BaseMatrix[T]]) -> BaseMatrix[T]:
+    def __rshift__(self, other: T | BaseMatrix[T]) -> BaseMatrix[T]:
         return self._left_op(other, rshift)
 
-    def __and__(self, other: Union[T, BaseMatrix[T]]) -> BaseMatrix[T]:
+    def __and__(self, other: T | BaseMatrix[T]) -> BaseMatrix[T]:
         return self._left_op(other, and_)
 
-    def __xor__(self, other: Union[T, BaseMatrix[T]]) -> BaseMatrix[T]:
+    def __xor__(self, other: T | BaseMatrix[T]) -> BaseMatrix[T]:
         return self._left_op(other, xor)
 
-    def __or__(self, other: Union[T, BaseMatrix[T]]) -> BaseMatrix[T]:
+    def __or__(self, other: T | BaseMatrix[T]) -> BaseMatrix[T]:
         return self._left_op(other, or_)
 
     def __radd__(self, other: T) -> BaseMatrix[T]:
@@ -651,7 +650,7 @@ class Matrix(BaseMatrix[T]):
         # noinspection PyProtectedMember
         return cls.vector_class._create(vec)
 
-    def __init__(self, mat: Union[BaseMatrix, Sequence[Sequence[T]]]) -> None:
+    def __init__(self, mat: BaseMatrix | Sequence[Sequence[T]]) -> None:
         if isinstance(mat, BaseMatrix):
             m, n = mat.shape
             self._mat = [mat[i, j] for i in range(m) for j in range(n)]
@@ -966,8 +965,8 @@ class LUDecomposition(Generic[T]):
     def reconstruct(self) -> BaseMatrix[T]:
         return self.l @ self.u
 
-    def solve(self, b: Union[BaseVector[T], BaseMatrix[T]])\
-            -> Union[BaseVector[T], BaseMatrix[T]]:
+    def solve(self, b: BaseVector[T] | BaseMatrix[T])\
+            -> BaseVector[T] | BaseMatrix[T]:
 
         lu = self._lu
 

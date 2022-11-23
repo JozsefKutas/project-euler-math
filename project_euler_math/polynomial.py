@@ -3,12 +3,12 @@ from __future__ import annotations
 from math import inf
 from numbers import Integral
 from functools import reduce
-from typing import Union, List, TypeVar, Generic, Iterable, Tuple, Callable
+from typing import List, TypeVar, Generic, Iterable, Tuple, Callable, Optional
 
 T = TypeVar('T')
 R = TypeVar('R')
 
-_PolynomialKey = Union[int, slice]
+_PolynomialKey = int | slice
 
 
 class Polynomial(Generic[T]):
@@ -23,11 +23,11 @@ class Polynomial(Generic[T]):
         return self._coeffs
 
     @property
-    def leading_coeff(self) -> Union[T, int]:
+    def leading_coeff(self) -> T | int:
         return self._coeffs[-1] if self._coeffs else 0
 
     @property
-    def degree(self) -> Union[int, float]:
+    def degree(self) -> int | float:
         length = len(self._coeffs)
         return length - 1 if length > 0 else -inf
 
@@ -39,7 +39,7 @@ class Polynomial(Generic[T]):
             self._coeffs.pop()
         return self
 
-    def __init__(self, coeffs: Union[None, Polynomial[T], Iterable[T]] = None) -> None:
+    def __init__(self, coeffs: Optional[Polynomial[T] | Iterable[T]] = None) -> None:
         if coeffs is None:
             self._coeffs = []
 
@@ -62,13 +62,13 @@ class Polynomial(Generic[T]):
     def __bool__(self) -> bool:
         return bool(self._coeffs)
 
-    def __getitem__(self, key: _PolynomialKey) -> Union[T, Polynomial[T]]:
+    def __getitem__(self, key: _PolynomialKey) -> T | Polynomial[T]:
         return self._coeffs[key]
 
-    def __setitem__(self, key: _PolynomialKey, value: Union[T, Polynomial[T]]) -> None:
+    def __setitem__(self, key: _PolynomialKey, value: T | Polynomial[T]) -> None:
         self._coeffs[key] = value
 
-    def __add__(self, other: Union[T, Polynomial[T]]) -> Polynomial[T]:
+    def __add__(self, other: T | Polynomial[T]) -> Polynomial[T]:
         if isinstance(other, Polynomial):
             if self.degree < other.degree:
                 p, q = self, other
@@ -82,10 +82,10 @@ class Polynomial(Generic[T]):
         else:
             return self + self._create([other])
 
-    def __sub__(self, other: Union[T, Polynomial[T]]) -> Polynomial[T]:
+    def __sub__(self, other: T | Polynomial[T]) -> Polynomial[T]:
         return self + (-other)
 
-    def __mul__(self, other: Union[T, Polynomial[T]]) -> Polynomial[T]:
+    def __mul__(self, other: T | Polynomial[T]) -> Polynomial[T]:
         if isinstance(other, Polynomial):
             degree = self.degree + other.degree
             if degree < 0:
@@ -101,7 +101,7 @@ class Polynomial(Generic[T]):
         else:
             return self._create([a * other for a in self._coeffs])
 
-    def __truediv__(self, other: Union[T, Polynomial[T]]) -> Polynomial[T]:
+    def __truediv__(self, other: T | Polynomial[T]) -> Polynomial[T]:
         if isinstance(other, Polynomial):
             raise TypeError
         else:

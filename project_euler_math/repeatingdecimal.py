@@ -4,7 +4,7 @@ from fractions import Fraction
 from collections import namedtuple
 from decimal import Decimal
 import re
-from typing import Union, Optional
+from typing import Optional
 
 
 RepeatingDecimalTuple = namedtuple(
@@ -26,7 +26,7 @@ class RepeatingDecimal:
     def repetend(self) -> str:
         return self._repetend
 
-    def __init__(self, value: Union[str, RepeatingDecimal, int, Decimal] = '0') -> None:
+    def __init__(self, value: str | RepeatingDecimal | int | Decimal = '0') -> None:
         if isinstance(value, str):
             m = _parser(value.strip().replace('_', ''))
             if m is None:

@@ -1,7 +1,7 @@
 from itertools import chain, combinations, islice
 from collections import defaultdict
-from typing import (Optional, Iterable, Sequence, List, MutableMapping,
-                    Callable, TypeVar)
+from typing import (
+    Optional, Iterable, Sequence, List, MutableMapping, Callable, TypeVar)
 
 
 T = TypeVar('T')

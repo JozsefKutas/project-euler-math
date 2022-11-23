@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from math import prod, gcd, isqrt
 from itertools import chain, cycle
-from typing import Optional, Union, Sequence, Tuple, Iterator, List
+from typing import Optional, Sequence, Tuple, Iterator, List
 
 from project_euler_math.ntheory import factorisation
 
@@ -31,7 +31,7 @@ class ContinuedFraction:
 
     def __init__(
             self,
-            initial: Union[ContinuedFraction, Sequence[int]],
+            initial: ContinuedFraction | Sequence[int],
             repeating: Optional[Sequence[int]] = None):
 
         if isinstance(initial, ContinuedFraction):

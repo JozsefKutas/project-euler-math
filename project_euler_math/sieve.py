@@ -1,6 +1,6 @@
 from bisect import bisect
 from itertools import compress
-from typing import Union, Iterator, List
+from typing import Iterator, List
 
 from project_euler_math.ntheory import primes_list
 
@@ -19,7 +19,7 @@ class PrimeSieve:
         self._end = end
         self._primes_list = primes_list(end)
 
-    def prime(self, key: Union[int, slice]) -> int:
+    def prime(self, key: int | slice) -> int:
         if isinstance(key, int):
             if key < 0:
                 raise IndexError("indices must be non-negative")
@@ -30,7 +30,7 @@ class PrimeSieve:
             raise TypeError("indices must be integers, not "
                             + type(key).__name__)
 
-    def __getitem__(self, key: Union[int, slice]) -> int:
+    def __getitem__(self, key: int | slice) -> int:
         return self.prime(key)
 
     def _extend_to_n(self, n: int) -> None:

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from numbers import Integral
 from operator import add, sub, mul, neg, pos
-from typing import TypeVar, Generic, Union, Callable, Optional
+from typing import TypeVar, Generic, Callable, Optional
 
 from project_euler_math.ntheory import mod_inverse, gcd
 
@@ -50,16 +50,16 @@ class Mod(Generic[T]):
         else:
             return Mod(op(self._n, other), self.mod)
 
-    def __add__(self, other: Union[T, Mod[T]]) -> Mod[T]:
+    def __add__(self, other: T | Mod[T]) -> Mod[T]:
         return self._left_op(other, add)
 
-    def __sub__(self, other: Union[T, Mod[T]]) -> Mod[T]:
+    def __sub__(self, other: T | Mod[T]) -> Mod[T]:
         return self._left_op(other, sub)
 
-    def __mul__(self, other: Union[T, Mod[T]]) -> Mod[T]:
+    def __mul__(self, other: T | Mod[T]) -> Mod[T]:
         return self._left_op(other, mul)
 
-    def __truediv__(self, other: Union[T, Mod[T]]) -> Mod[T]:
+    def __truediv__(self, other: T | Mod[T]) -> Mod[T]:
         if isinstance(other, Mod):
             if self.mod != other.mod:
                 raise ValueError(
@@ -68,7 +68,7 @@ class Mod(Generic[T]):
         else:
             return self * Mod(other, self.mod).invert()
 
-    def __mod__(self, other: Union[T, Mod[T]]) -> Mod[T]:
+    def __mod__(self, other: T | Mod[T]) -> Mod[T]:
         if isinstance(other, Mod):
             if self.mod != other.mod:
                 raise ValueError(

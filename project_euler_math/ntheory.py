@@ -5,8 +5,8 @@ from numbers import Integral
 from random import Random
 from itertools import compress, count
 from collections import Counter
-from typing import (Sequence, List, Mapping, Optional, Iterator, Callable,
-                    TypeVar, Union)
+from typing import (
+    Sequence, List, Mapping, Optional, Iterator, Callable, TypeVar)
 
 from project_euler_math.eisenstein import Eisenstein
 from project_euler_math.gaussian import Gaussian
@@ -299,7 +299,7 @@ def pseudoprime_generator(limit: int, seed: int = 42) -> Iterator[int]:
             yield n
 
 
-def padic_val(n: int, p: int) -> Union[int, float]:
+def padic_val(n: int, p: int) -> int | float:
     """Return the `p`-adic valuation of `n`."""
     if n == 0:
         return inf
