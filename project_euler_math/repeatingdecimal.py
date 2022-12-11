@@ -4,8 +4,7 @@ from fractions import Fraction
 from collections import namedtuple
 from decimal import Decimal
 import re
-from typing import Optional
-
+from typing import Optional, Literal
 
 RepeatingDecimalTuple = namedtuple(
     'RepeatingDecimalTuple',
@@ -15,16 +14,28 @@ RepeatingDecimalTuple = namedtuple(
 class RepeatingDecimal:
     """A repeating decimal."""
 
-    _exp: int
+    _exponent: int
     _initial: str
     _repetend: Optional[str]
-    _sign: int
+    _sign: Literal[0, 1]
 
-    __slots__ = ('_exp', '_initial', '_repetend', '_sign')
+    __slots__ = ('_exponent', '_initial', '_repetend', '_sign')
+
+    @property
+    def exponent(self) -> int:
+        return self._exponent
+
+    @property
+    def initial(self) -> str:
+        return self._initial
 
     @property
     def repetend(self) -> str:
         return self._repetend
+
+    @property
+    def sign(self):
+        return self._sign
 
     def __init__(self, value: str | RepeatingDecimal | int | Decimal = '0') -> None:
         if isinstance(value, str):
@@ -36,29 +47,29 @@ class RepeatingDecimal:
             intpart = m.group('int')
             fracpart = m.group('frac') or ''
             repetend = m.group('repetend')
-            self._exp = -len(fracpart)
+            self._exponent = -len(fracpart)
             self._initial = (intpart + fracpart).lstrip('0')
             self._repetend = repetend
-            self._sign = 1 if m.group('sign') == '-' else 0
+            self._sign = 1 if m.group('sign') == '-' else 0  # noqa
 
         elif isinstance(value, RepeatingDecimal):
-            self._exp = value._exp
+            self._exponent = value._exponent
             self._initial = value._initial
             self._repetend = value._repetend
             self._sign = value._sign
 
         elif isinstance(value, int):
-            self._exp = 0
+            self._exponent = 0
             self._initial = str(value)
             self._repetend = None
             self._sign = 0
 
         elif isinstance(value, Decimal):
             tup = value.as_tuple()
-            self._exp = tup.exponent  # TODO: can Decimals have positive exponents?
+            self._exponent = tup.exponent
             self._initial = ''.join(map(str, tup.digits))
             self._repetend = None
-            self._sign = tup.sign
+            self._sign = tup.sign  # noqa
 
         elif isinstance(value, (list, tuple)):
             if len(value) != 4:
@@ -89,7 +100,7 @@ class RepeatingDecimal:
             if not isinstance(value[2], int):
                 raise ValueError('The third value in the tuple must be an '
                                  'integer.')
-            self._exp = value[2]
+            self._exponent = value[2]
 
             if not all(isinstance(d, int) and 0 <= d <= 9 for d in value[3]):
                 raise ValueError('The fourth value in the tuple must be '
@@ -105,13 +116,13 @@ class RepeatingDecimal:
         return RepeatingDecimalTuple(
             self._sign,
             tuple(map(int, self._initial)),
-            self._exp,
+            self._exponent,
             tuple(map(int, self._repetend)) if self._repetend is not None else None)
 
     @classmethod
     def _from_state(cls, exp, initial, repetend, sign) -> RepeatingDecimal:
         self = object.__new__(cls)
-        self._exp = exp
+        self._exponent = exp
         self._initial = initial
         self._repetend = repetend
         self._sign = sign
@@ -159,7 +170,7 @@ class RepeatingDecimal:
         return cls._from_state(exp, initial, repetend, sign)
 
     def to_fraction(self) -> Fraction:
-        q1 = 10**-self._exp
+        q1 = 10**-self._exponent
         initial = Fraction(int(self._initial) if self._initial else 0, q1)
         if self._repetend:
             q2 = (10**len(self._repetend) - 1) * q1
@@ -169,22 +180,39 @@ class RepeatingDecimal:
             fraction = initial
         return -fraction if self._sign else fraction
 
+    def digit(self, i):
+        i -= self._exponent
+        if i < 0:
+            i = -i - 1
+            repetend = self._repetend
+            if repetend is not None:
+                i %= len(repetend)
+                return int(repetend[i])
+            else:
+                return 0
+        else:
+            initial = self._initial
+            if i < len(initial):
+                return self._initial[len(initial)-i-1]
+            else:
+                return 0
+
     def __eq__(self, other):
         if isinstance(other, RepeatingDecimal):
-            return ((self._exp, self._initial, self._repetend, self._sign)
-                    == (other._exp, other._initial, other._repetend, other._sign))
+            return ((self._exponent, self._initial, self._repetend, self._sign)
+                    == (other._exponent, other._initial, other._repetend, other._sign))
         return NotImplemented
 
     def __hash__(self):
-        return hash((self._exp, self._initial, self._repetend, self._sign))
+        return hash((self._exponent, self._initial, self._repetend, self._sign))
 
     def __repr__(self) -> str:
         return type(self).__name__ + f'(\'{self!s}\')'
 
     def __str__(self) -> str:
         sign = '-' if self._sign else ''
-        initial = self._initial.zfill(-self._exp + 1)
-        i = len(initial) + self._exp
+        initial = self._initial.zfill(-self._exponent + 1)
+        i = len(initial) + self._exponent
         nonrepetend = sign + initial[:i] + '.' + initial[i:]
         if self._repetend:
             repetend = '(' + self._repetend + ')'
