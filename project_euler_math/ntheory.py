@@ -1,5 +1,5 @@
 import typing
-from math import prod, inf, isqrt, gcd as mathgcd
+from math import prod, inf, isqrt, gcd as mathgcd, lcm as mathlcm
 from fractions import Fraction
 from numbers import Integral
 from random import Random
@@ -556,23 +556,21 @@ def primitive_root(p: int,
             return a
 
 
-def pisano_period(n: int, fact: Optional[Mapping[int, int]] = None) -> int:
+def fibonacci_period(n: int, fact: Optional[Mapping[int, int]] = None) -> int:
     """Return a period (not necessarily the minimal period) of the Fibonacci
     sequence modulo `n`."""
     fact = fact or factorisation(n)
     ans = 1
     for p, e in fact.items():
-        mod5 = p % 5
         if p == 2:
-            p_period = 3
+            period = 3
         elif p == 5:
-            p_period = 20
-        elif mod5 == 1 or mod5 == 4:
-            p_period = p-1
+            period = 20
+        elif p % 5 in (1, 4):
+            period = p-1
         else:
-            p_period = 2*(p+1)
-        period = p_period * p**(e-1)
-        ans = (ans * period) // mathgcd(ans, period)
+            period = 2*(p+1)
+        ans = mathlcm(ans, period * p**(e-1))
     return ans
 
 
