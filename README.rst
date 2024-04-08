@@ -1,4 +1,4 @@
-Project Euler Math
+project-euler-math
 ==================
 
 A library of maths functions used to solve Project Euler problems, written in
