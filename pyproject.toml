@@ -2,7 +2,7 @@
 name = "project-euler-math"
 version = "1.0.0"
 description = "A library of maths functions used to solve Project Euler problems, written in pure Python"
-authors = ["Jozsef <jozsef1729@gmail.com>"]
+authors = ["Jozsef <joz.kutas@gmail.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.9"
