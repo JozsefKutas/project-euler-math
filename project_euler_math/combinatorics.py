@@ -1,5 +1,5 @@
 from math import prod, factorial, isqrt, comb
-from itertools import accumulate, count
+from itertools import accumulate, count, product
 from typing import Iterator, Sequence, List
 
 from project_euler_math.ntheory import sigma_list
@@ -51,10 +51,14 @@ def partition(n: int) -> int:
 def partition_list(end: int) -> List[int]:
     """Return a list of length `end`, the i-th element of which is the partition
     number of i."""
-    sigmas = sigma_list(end)
-    partitions = [1] * end
-    for i in range(2, end):
-        partitions[i] = sum(sigmas[i-j] * partitions[j] for j in range(i)) // i
+    partitions = [0] * end
+    partitions[0] = 1
+    for i in range(1, end):
+        for j, s in product(range(1, i+1), (-1, 1)):
+            p = j * (3*j+s) // 2
+            if p > i:
+                break
+            partitions[i] += (-1)**(j-1) * partitions[i - p]
     return partitions
 
 
