@@ -13,7 +13,7 @@ class Gaussian(Complex):
     _x: Integral
     _y: Integral
 
-    __slots__ = ('_x', '_y')
+    __slots__ = ("_x", "_y")
 
     @property
     def x(self) -> Integral:
@@ -31,10 +31,7 @@ class Gaussian(Complex):
     def imag(self) -> Integral:
         return self._y
 
-    def __init__(
-            self,
-            x: Integral | Gaussian = 0,
-            y: Integral | Gaussian = 0) -> None:
+    def __init__(self, x: Integral | Gaussian = 0, y: Integral | Gaussian = 0) -> None:
 
         self._x = 0
         self._y = 0
@@ -45,7 +42,7 @@ class Gaussian(Complex):
             self._x += x.x
             self._y += x.y
         else:
-            raise ValueError(f'x is not Integral or Gaussian: {x}')
+            raise ValueError(f"x is not Integral or Gaussian: {x}")
 
         if isinstance(y, Integral):
             self._y += y
@@ -53,7 +50,7 @@ class Gaussian(Complex):
             self._x -= y.y
             self._y += y.x
         else:
-            raise ValueError(f'y is not Integral or Gaussian: {y}')
+            raise ValueError(f"y is not Integral or Gaussian: {y}")
 
     def __eq__(self, other) -> bool:
         if isinstance(other, Integral):
@@ -123,13 +120,12 @@ class Gaussian(Complex):
             x = x1 * x2 + y1 * y2
             y = -x1 * y2 + y1 * x2
             d = other.norm()
-            roundup = (d-1) // 2
+            roundup = (d - 1) // 2
             return Gaussian((x + roundup) // d, (y + roundup) // d)
 
         if isinstance(other, Integral):
             roundup = (other - 1) // 2
-            return Gaussian(
-                (self.x + roundup) // other, (self.y + roundup) // other)
+            return Gaussian((self.x + roundup) // other, (self.y + roundup) // other)
 
         else:
             return NotImplemented
@@ -141,8 +137,7 @@ class Gaussian(Complex):
         else:
             return self - div * other
 
-    def __divmod__(self, other: Integral | Gaussian)\
-            -> Tuple[Gaussian, Gaussian]:
+    def __divmod__(self, other: Integral | Gaussian) -> Tuple[Gaussian, Gaussian]:
         div = self.__floordiv__(other)
         if div is NotImplemented:
             return NotImplemented
@@ -242,10 +237,10 @@ class Gaussian(Complex):
 
     def __repr__(self) -> str:
         if self.x == 0:
-            return f'{self.y}j'
+            return f"{self.y}j"
         # noinspection PyTypeChecker
-        sep = '+' if self.y >= 0 else ''
-        return f'({self.x}{sep}{self.y}j)'
+        sep = "+" if self.y >= 0 else ""
+        return f"({self.x}{sep}{self.y}j)"
 
 
 J = Gaussian(0, 1)

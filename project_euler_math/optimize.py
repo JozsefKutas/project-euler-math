@@ -3,14 +3,19 @@ from typing import Callable, Optional
 from project_euler_math.matrix import Vector
 
 
-def nelder_mead(f: Callable[..., float], x0: Vector,
-                deltas: Optional[Vector] = None, scale=1.,
-                args: tuple = (),
-                ftol: float = 1e-12, maxiter: int = 1000):
+def nelder_mead(
+    f: Callable[..., float],
+    x0: Vector,
+    deltas: Optional[Vector] = None,
+    scale=1.0,
+    args: tuple = (),
+    ftol: float = 1e-12,
+    maxiter: int = 1000,
+) -> None:
     """Searches for the minimum value of `f` using the Nelder-Mead algorithm."""
 
-    reflect_factor = -1.
-    expand_factor = -2.
+    reflect_factor = -1.0
+    expand_factor = -2.0
     contract_factor = 0.5
     shrink_factor = 0.5
 
@@ -23,7 +28,7 @@ def nelder_mead(f: Callable[..., float], x0: Vector,
             simplex.append((x, f(x, *args)))
     else:
         for i in range(n):
-            ej = Vector([scale if i == j else 0. for j in range(n)])
+            ej = Vector([scale if i == j else 0.0 for j in range(n)])
             x = x0 + ej
             simplex.append((x, f(x, *args)))
 
@@ -34,7 +39,7 @@ def nelder_mead(f: Callable[..., float], x0: Vector,
         xlo, ylo = simplex[0]
         xhi, yhi = simplex[-1]
         xnhi, ynhi = simplex[-2]
-        if 2. * abs(yhi - ylo) / (abs(yhi) + abs(ylo) + eps) < ftol:
+        if 2.0 * abs(yhi - ylo) / (abs(yhi) + abs(ylo) + eps) < ftol:
             return xlo
 
         x = _nelder_mead_transform(xhi, xsum, reflect_factor)
@@ -47,7 +52,7 @@ def nelder_mead(f: Callable[..., float], x0: Vector,
             x = _nelder_mead_transform(xhi, xsum, contract_factor)
             y = f(x, *args)
             if y >= yold:
-                b = 1. - shrink_factor
+                b = 1.0 - shrink_factor
                 for i, (x, y) in enumerate(simplex[1:], 1):
                     x = shrink_factor * x + b * xlo
                     simplex[i] = (x, f(x, *args))
@@ -62,6 +67,6 @@ def nelder_mead(f: Callable[..., float], x0: Vector,
 
 def _nelder_mead_transform(x, xsum, factor):
     n = len(x)
-    a = (1. - factor) / n
+    a = (1.0 - factor) / n
     b = factor - a
     return a * xsum + b * x

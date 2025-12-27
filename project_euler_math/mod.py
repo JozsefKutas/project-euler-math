@@ -6,7 +6,7 @@ from typing import TypeVar, Generic, Callable, Optional
 
 from project_euler_math.ntheory import mod_inverse, gcd
 
-T = TypeVar('T')
+T = TypeVar("T")
 
 
 class Mod(Generic[T]):
@@ -17,7 +17,7 @@ class Mod(Generic[T]):
     _n: T
     _mod: T
 
-    __slots__ = ('_n', '_mod')
+    __slots__ = ("_n", "_mod")
 
     @property
     def mod(self) -> T:
@@ -44,8 +44,7 @@ class Mod(Generic[T]):
     def _left_op(self, other, op):
         if isinstance(other, Mod):
             if self.mod != other.mod:
-                raise ValueError(
-                    f'modulos do not match: {self.mod}, {other.mod}')
+                raise ValueError(f"modulos do not match: {self.mod}, {other.mod}")
             return Mod(op(self._n, other._n), self.mod)
         else:
             return Mod(op(self._n, other), self.mod)
@@ -62,8 +61,7 @@ class Mod(Generic[T]):
     def __truediv__(self, other: T | Mod[T]) -> Mod[T]:
         if isinstance(other, Mod):
             if self.mod != other.mod:
-                raise ValueError(
-                    f'modulos do not match: {self.mod}, {other.mod}')
+                raise ValueError(f"modulos do not match: {self.mod}, {other.mod}")
             return self * other.invert()
         else:
             return self * Mod(other, self.mod).invert()
@@ -71,8 +69,7 @@ class Mod(Generic[T]):
     def __mod__(self, other: T | Mod[T]) -> Mod[T]:
         if isinstance(other, Mod):
             if self.mod != other.mod:
-                raise ValueError(
-                    f'modulos do not match: {self.mod}, {other.mod}')
+                raise ValueError(f"modulos do not match: {self.mod}, {other.mod}")
             return Mod(self._n % gcd(other._n, self.mod), self.mod)
         else:
             return Mod(self._n % gcd(other, self.mod), self.mod)
@@ -123,7 +120,7 @@ class Mod(Generic[T]):
         return Mod(inv, self.mod)
 
     def __str__(self) -> str:
-        return f'{self._n!r} (mod {self.mod!r})'
+        return f"{self._n!r} (mod {self.mod!r})"
 
     def __repr__(self) -> str:
-        return type(self).__name__ + f'({self._n!r},{self.mod!r})'
+        return type(self).__name__ + f"({self._n!r},{self.mod!r})"

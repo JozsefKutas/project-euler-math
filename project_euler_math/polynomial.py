@@ -5,8 +5,8 @@ from math import inf
 from numbers import Integral
 from typing import List, TypeVar, Generic, Iterable, Tuple, Callable, Optional
 
-T = TypeVar('T')
-R = TypeVar('R')
+T = TypeVar("T")
+R = TypeVar("R")
 
 _PolynomialKey = int | slice
 
@@ -16,7 +16,7 @@ class Polynomial(Generic[T]):
 
     _coeffs: List[T]
 
-    __slots__ = '_coeffs'
+    __slots__ = "_coeffs"
 
     @property
     def coeffs(self) -> List[T]:
@@ -95,7 +95,7 @@ class Polynomial(Generic[T]):
             coeffs = [zero] * (degree + 1)
             for i, a in enumerate(self._coeffs):
                 for j, b in enumerate(other._coeffs, i):
-                    coeffs[j] += a*b
+                    coeffs[j] += a * b
             return self._create(coeffs)
 
         else:
@@ -132,7 +132,7 @@ class Polynomial(Generic[T]):
             div = []
             for _ in range(len(rem) - len(monic) + 1):
                 a = rem[-1]
-                for i in range(-1, -len(monic)-1, -1):
+                for i in range(-1, -len(monic) - 1, -1):
                     rem[i] -= a * monic[i]
                 div.append(a)
                 rem.pop()
@@ -188,14 +188,14 @@ class Polynomial(Generic[T]):
         return self._create([f(a) for a in self])
 
     def __call__(self, x: T) -> T:
-        return reduce(lambda a, b: a*x + b, reversed(self._coeffs), 0)
+        return reduce(lambda a, b: a * x + b, reversed(self._coeffs), 0)
 
     def deriv(self) -> Polynomial[T]:
-        return self._create([i*a for i, a in enumerate(self._coeffs)][1:])
+        return self._create([i * a for i, a in enumerate(self._coeffs)][1:])
 
     def antideriv(self) -> Polynomial[T]:
         zero = _zero(self.leading_coeff)
-        return self._create([zero] + [a/i for i, a in enumerate(self._coeffs, 1)])
+        return self._create([zero] + [a / i for i, a in enumerate(self._coeffs, 1)])
 
     def integral(self, a: T, b: T) -> T:
         antideriv = self.antideriv()
@@ -206,16 +206,16 @@ class Polynomial(Generic[T]):
         for i, a in enumerate(self._coeffs):
             if a:
                 if i == 0:
-                    monomial_str = f'{a!r}'
+                    monomial_str = f"{a!r}"
                 elif i == 1:
-                    monomial_str = f'{a!r}*x'
+                    monomial_str = f"{a!r}*x"
                 else:
-                    monomial_str = f'{a!r}*x**{i}'
+                    monomial_str = f"{a!r}*x**{i}"
                 monomial_strs.append(monomial_str)
-        return ' + '.join(monomial_strs)
+        return " + ".join(monomial_strs)
 
     def __repr__(self) -> str:
-        return type(self).__name__ + f'({self._coeffs!r})'
+        return type(self).__name__ + f"({self._coeffs!r})"
 
 
 def _zero(n):
@@ -223,4 +223,4 @@ def _zero(n):
 
 
 def _one(n):
-    return n ** 0
+    return n**0
