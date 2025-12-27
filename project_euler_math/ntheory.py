@@ -3,7 +3,7 @@ from math import prod, inf, isqrt, gcd as mathgcd, lcm as mathlcm
 from fractions import Fraction
 from numbers import Integral
 from random import Random
-from itertools import compress, count
+from itertools import compress, count, accumulate
 from collections import Counter
 from typing import (
     Sequence, List, Mapping, Optional, Iterator, Callable, TypeVar)
@@ -597,13 +597,7 @@ def primes_list(end: int) -> List[int]:
 def prime_count_list(end: int) -> List[int]:
     """Return a list of length `end`, the i-th element of which is the number of
     primes less than or equal to i."""
-    ans = primality_list(end)
-    if end > 0:
-        # noinspection PyTypeChecker
-        ans[0] = 0
-    for i in range(1, len(ans)):
-        ans[i] += ans[i-1]
-    return ans
+    return list(accumulate(map(int, primality_list(end))))
 
 
 def prime_factor_list(end: int) -> List[int]:
@@ -754,6 +748,43 @@ def _prepare_prime_factors(prime_factors, end):
         return prime_factors[:end]
     else:
         return prime_factor_list(end)
+
+
+def primality_iter(segment: int = 100_000) -> Iterator[int]:
+    """Return an iterator, the i-th element of which is True if i is prime, and
+    False otherwise. Uses a segmented sieve algorithm with segment size equal to
+    the `segment` parameter."""
+    primes = primes_list(segment)
+
+    primality = [False] * segment
+    for p in primes:
+        primality[p] = True
+    yield from primality
+
+    n = segment
+    while n < segment ** 2:
+        primality[:] = [True] * segment
+        for p in primes:
+            start_index = max(p * p - n, -n % p)
+            if start_index >= segment:
+                break
+            for i in range(start_index, segment, p):
+                primality[i] = False
+        yield from primality
+        n += segment
+
+
+def primes_iter(segment: int = 100_000) -> Iterator[int]:
+    """Generate primes. Uses a segmented sieve algorithm with segment size equal
+    to the `segment` parameter."""
+    yield from compress(count(0), primality_iter(segment))
+
+
+def prime_count_iter(segment: int = 100_000) -> Iterator[int]:
+    """Return an iterator, the i-th element of which is the number of primes
+    less than or equal to i. Uses a segmented sieve algorithm with segment size
+    equal to the `segment` parameter."""
+    yield from accumulate(map(int, primality_iter(segment)))
 
 
 def prime_count(n: int) -> int:
