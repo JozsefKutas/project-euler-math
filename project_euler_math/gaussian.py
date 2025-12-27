@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from numbers import Integral, Complex
-from typing import Tuple
 
 
 class Gaussian(Complex):
@@ -137,7 +136,7 @@ class Gaussian(Complex):
         else:
             return self - div * other
 
-    def __divmod__(self, other: Integral | Gaussian) -> Tuple[Gaussian, Gaussian]:
+    def __divmod__(self, other: Integral | Gaussian) -> tuple[Gaussian, Gaussian]:
         div = self.__floordiv__(other)
         if div is NotImplemented:
             return NotImplemented
@@ -195,7 +194,7 @@ class Gaussian(Complex):
     def __rdiv__(self, other: Complex) -> complex:
         return self.__rtruediv__(other)
 
-    def __rdivmod__(self, other: Integral) -> Tuple[Gaussian, Gaussian]:
+    def __rdivmod__(self, other: Integral) -> tuple[Gaussian, Gaussian]:
         if isinstance(other, Integral):
             # noinspection PyTypeChecker
             return divmod(Gaussian(other), self)

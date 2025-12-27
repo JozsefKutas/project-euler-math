@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from numbers import Integral
 from operator import add, sub, mul, neg, pos
-from typing import TypeVar, Generic, Callable, Optional
+from typing import TypeVar, Generic, Callable
 
 from project_euler_math.ntheory import mod_inverse, gcd
 
@@ -74,7 +74,7 @@ class Mod(Generic[T]):
         else:
             return Mod(self._n % gcd(other, self.mod), self.mod)
 
-    def __pow__(self, power: Integral, modulo: Optional[T] = None) -> Mod[T]:
+    def __pow__(self, power: Integral, modulo: T | None = None) -> Mod[T]:
         if isinstance(power, Integral):
             if power < 0:
                 return self.invert() ** (-power)

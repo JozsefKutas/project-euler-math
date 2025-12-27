@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from itertools import chain, cycle
 from math import prod, gcd, isqrt
-from typing import Optional, Sequence, Tuple, Iterator, List
+from typing import Sequence, Iterator
 
 from project_euler_math.ntheory import factorisation
 
@@ -13,26 +13,26 @@ class ContinuedFraction:
     expansion if and only if it is a quadratic irrational.
     """
 
-    _initial: List[int]
-    _repeating: List[int]
+    _initial: list[int]
+    _repeating: list[int]
 
     __slots__ = ("_initial", "_repeating")
 
     @property
-    def initial(self) -> List[int]:
+    def initial(self) -> list[int]:
         """The coefficients for the initial non-repeating part of the continued
         fraction."""
         return self._initial
 
     @property
-    def repeating(self) -> List[int]:
+    def repeating(self) -> list[int]:
         """The coefficients for the repeating part of the continued fraction."""
         return self._repeating
 
     def __init__(
         self,
         initial: ContinuedFraction | Sequence[int],
-        repeating: Optional[Sequence[int]] = None,
+        repeating: Sequence[int] | None = None,
     ) -> None:
 
         if isinstance(initial, ContinuedFraction):
@@ -116,7 +116,7 @@ class ContinuedFraction:
     def to_quadratic(self):
         raise NotImplementedError
 
-    def convergents(self) -> Iterator[Tuple[int, int]]:
+    def convergents(self) -> Iterator[tuple[int, int]]:
         """Generate rational approximations to the continued fraction."""
 
         partial_quotients = chain(self.initial, cycle(self.repeating))

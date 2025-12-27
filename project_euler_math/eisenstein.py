@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from math import sqrt
 from numbers import Integral, Real, Complex
-from typing import Tuple
 
 _SQRT3 = sqrt(3)
 
@@ -142,7 +141,7 @@ class Eisenstein(Complex):
         else:
             return self - div * other
 
-    def __divmod__(self, other: Integral | Eisenstein) -> Tuple[Eisenstein, Eisenstein]:
+    def __divmod__(self, other: Integral | Eisenstein) -> tuple[Eisenstein, Eisenstein]:
         div = self.__floordiv__(other)
         if div is NotImplemented:
             return NotImplemented
@@ -200,7 +199,7 @@ class Eisenstein(Complex):
     def __rdiv__(self, other: Complex) -> complex:
         return self.__rtruediv__(other)
 
-    def __rdivmod__(self, other: Integral) -> Tuple[Eisenstein, Eisenstein]:
+    def __rdivmod__(self, other: Integral) -> tuple[Eisenstein, Eisenstein]:
         if isinstance(other, Integral):
             # noinspection PyTypeChecker
             return divmod(Eisenstein(other), self)

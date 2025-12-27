@@ -4,7 +4,7 @@ import re
 from collections import namedtuple
 from decimal import Decimal
 from fractions import Fraction
-from typing import Optional, Literal
+from typing import Literal
 
 RepeatingDecimalTuple = namedtuple(
     "RepeatingDecimalTuple", "sign initial exponent repetend"
@@ -16,7 +16,7 @@ class RepeatingDecimal:
 
     _exponent: int
     _initial: str
-    _repetend: Optional[str]
+    _repetend: str | None
     _sign: Literal[0, 1]
 
     __slots__ = ("_exponent", "_initial", "_repetend", "_sign")

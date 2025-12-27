@@ -1,13 +1,13 @@
 from collections import defaultdict
 from itertools import chain, combinations, islice
-from typing import Optional, Iterable, Sequence, List, MutableMapping, Callable, TypeVar
+from typing import Iterable, Sequence, MutableMapping, Callable, TypeVar
 
 T = TypeVar("T")
 K = TypeVar("K")
 V = TypeVar("V")
 
 
-def chunks(iterable: Iterable[T], chunk_size: int) -> Iterable[List[T]]:
+def chunks(iterable: Iterable[T], chunk_size: int) -> Iterable[list[T]]:
     """Return an iterable split into chunks."""
     it = iter(iterable)
     for x in it:
@@ -36,7 +36,7 @@ def powerset(iterable: Iterable[T], nonempty: bool = False) -> Iterable[Sequence
 def groupby(
     iterable: Iterable[T],
     key: Callable[[T], K],
-    downstream: Optional[Callable[[Sequence[T]], V]] = None,
+    downstream: Callable[[Sequence[T]], V] | None = None,
 ) -> MutableMapping[K, V]:
     """Return a defaultdict, containing the elements of an iterable grouped by a
     key function."""

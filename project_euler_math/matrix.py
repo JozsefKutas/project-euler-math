@@ -26,13 +26,13 @@ from operator import (
     pos,
     invert,
 )
-from typing import TypeVar, Tuple, List, Iterator, Generic, Iterable, Callable, Sequence
+from typing import TypeVar, Iterator, Generic, Iterable, Callable, Sequence
 
 T = TypeVar("T")
 R = TypeVar("R")
 
 _VectorKey = int | slice
-_MatrixKey = Tuple[int | slice, int | slice]
+_MatrixKey = tuple[int | slice, int | slice]
 
 
 def _zero(n):
@@ -50,7 +50,7 @@ class BaseVector(ABC, Generic[T]):
 
     @property
     @abstractmethod
-    def shape(self) -> Tuple[int]:
+    def shape(self) -> tuple[int]:
         raise NotImplementedError
 
     def __len__(self) -> int:
@@ -98,7 +98,7 @@ class BaseVector(ABC, Generic[T]):
         raise NotImplementedError
 
     @abstractmethod
-    def as_list(self) -> List[T]:
+    def as_list(self) -> list[T]:
         raise NotImplementedError
 
     @abstractmethod
@@ -235,7 +235,7 @@ class Vector(BaseVector[T]):
     Vector class backed by all entries in a list.
     """
 
-    _vec: List[T]
+    _vec: list[T]
 
     __slots__ = "_vec"
 
@@ -366,7 +366,7 @@ class BaseMatrix(ABC, Generic[T]):
 
     @property
     @abstractmethod
-    def shape(self) -> Tuple[int, int]:
+    def shape(self) -> tuple[int, int]:
         raise NotImplementedError
 
     @property
@@ -386,20 +386,20 @@ class BaseMatrix(ABC, Generic[T]):
     @classmethod
     @abstractmethod
     def from_function(
-        cls, function: Callable[[int, int], T], shape: Tuple[int, int]
+        cls, function: Callable[[int, int], T], shape: tuple[int, int]
     ) -> BaseMatrix[T]:
         raise NotImplementedError
 
     @classmethod
-    def zeros(cls, shape: Tuple[int, int]) -> BaseMatrix[int]:
+    def zeros(cls, shape: tuple[int, int]) -> BaseMatrix[int]:
         return cls.full(shape, 0)
 
     @classmethod
-    def ones(cls, shape: Tuple[int, int]) -> BaseMatrix[int]:
+    def ones(cls, shape: tuple[int, int]) -> BaseMatrix[int]:
         return cls.full(shape, 1)
 
     @classmethod
-    def full(cls, shape: Tuple[int, int], x: T) -> BaseMatrix[T]:
+    def full(cls, shape: tuple[int, int], x: T) -> BaseMatrix[T]:
         return cls.from_function(lambda i, j: x, shape)
 
     @classmethod
@@ -441,21 +441,21 @@ class BaseMatrix(ABC, Generic[T]):
         raise NotImplementedError
 
     @abstractmethod
-    def row_list(self, i: int) -> List[T]:
+    def row_list(self, i: int) -> list[T]:
         raise NotImplementedError
 
     def row(self, i: int) -> BaseVector[T]:
         return Vector(self.row_list(i))
 
     @abstractmethod
-    def col_list(self, j: int) -> List[T]:
+    def col_list(self, j: int) -> list[T]:
         raise NotImplementedError
 
     def col(self, j: int) -> BaseVector[T]:
         return Vector(self.col_list(j))
 
     @abstractmethod
-    def diag_list(self) -> List[T]:
+    def diag_list(self) -> list[T]:
         raise NotImplementedError
 
     def diag(self) -> BaseVector[T]:
@@ -469,7 +469,7 @@ class BaseMatrix(ABC, Generic[T]):
     def triu(self, k: int = 0) -> BaseMatrix[T]:
         raise NotImplementedError
 
-    def as_list(self) -> List[List[T]]:
+    def as_list(self) -> list[list[T]]:
         return [self.row_list(i) for i in range(self.nrows)]
 
     @abstractmethod
@@ -649,8 +649,8 @@ class Matrix(BaseMatrix[T]):
     order.
     """
 
-    _mat: List[List[T]]
-    _shape: Tuple[int, int]
+    _mat: list[list[T]]
+    _shape: tuple[int, int]
 
     vector_class = Vector
 
@@ -928,7 +928,7 @@ class Matrix(BaseMatrix[T]):
 class LUDecomposition(Generic[T]):
 
     _lu: BaseMatrix[T]
-    _idx: List[int]
+    _idx: list[int]
 
     @property
     def lu(self) -> BaseMatrix[T]:
@@ -947,10 +947,10 @@ class LUDecomposition(Generic[T]):
         return self._lu.triu()
 
     @property
-    def idx(self) -> List[int]:
+    def idx(self) -> list[int]:
         return self._idx
 
-    def __init__(self, lu: BaseMatrix[T], idx: List[int]) -> None:
+    def __init__(self, lu: BaseMatrix[T], idx: list[int]) -> None:
         self._lu = lu
         self._idx = idx
 

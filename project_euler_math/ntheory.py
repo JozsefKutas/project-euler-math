@@ -5,7 +5,7 @@ from itertools import compress, count, accumulate
 from math import prod, inf, isqrt, gcd as mathgcd, lcm as mathlcm
 from numbers import Integral
 from random import Random
-from typing import Sequence, List, Mapping, Optional, Iterator, Callable, TypeVar
+from typing import Sequence, Mapping, Iterator, Callable, TypeVar
 
 from project_euler_math.eisenstein import Eisenstein
 from project_euler_math.gaussian import Gaussian
@@ -95,7 +95,7 @@ def bezout(m: E, n: E) -> Sequence[E]:
     return d_old, s_old, t_old
 
 
-def mod_inverse(a: E, mod: E) -> Optional[E]:
+def mod_inverse(a: E, mod: E) -> E | None:
     """Return the inverse of `a` modulo `mod`. If no inverse exists (`a` and
     `mod` are not coprime), returns None."""
     # similar to bezout, but don't need to calculate t
@@ -130,7 +130,7 @@ def crt2(a: E, b: E, m: E, n: E) -> E:
     return (a + (b - a) * m * inv) % (m * n)
 
 
-def crt2_noncoprime(a: E, b: E, m: E, n: E) -> Optional[E]:
+def crt2_noncoprime(a: E, b: E, m: E, n: E) -> E | None:
     """Compute a solution to the two number Chinese remainder theorem problem.
     `m` and `n` need not be coprime. If there exists no solution, returns
     None."""
@@ -141,7 +141,7 @@ def crt2_noncoprime(a: E, b: E, m: E, n: E) -> Optional[E]:
     return (a + q * m * s) % ((m * n) // d)
 
 
-def farey_sequence(n: int) -> List[Fraction]:
+def farey_sequence(n: int) -> list[Fraction]:
     """Return the Farey sequence of order `n`."""
     seq = [Fraction(0), Fraction(1)]
     for q in range(2, n + 1):
@@ -225,7 +225,7 @@ def _quadratic_nonresidue(p: int, seed) -> int:
             return d
 
 
-def is_prime(n: int, prime_factors: Optional[Sequence[int]] = None) -> bool:
+def is_prime(n: int, prime_factors: Sequence[int] | None = None) -> bool:
     """Return True if the positive integer `n` is prime, False otherwise.
     First tries trial division using small primes, then the Miller-Rabin
     test with bases from Jaeschke (1993) and Sorenson and Webster (2015)
@@ -322,8 +322,8 @@ _wheel = [
 def factorisation(
     n: int,
     trial_div_limit: int = 10000,
-    pollard_rho_args: Optional[Mapping[int, int]] = None,
-    prime_factors: Optional[Sequence[int]] = None,
+    pollard_rho_args: Mapping[int, int] | None = None,
+    prime_factors: Sequence[int] | None = None,
 ) -> typing.Counter[int]:
     """Return the prime factorisation of `n`. First tries trial division using
     the wheel factorisation approach up to the specified limit, then uses
@@ -427,7 +427,7 @@ def pollard_rho(n: int, a=1, seed=42, k=1, f: Callable[[int], int] = None) -> in
                 break
 
 
-def divisors(n: int, fact: Optional[Mapping[int, int]] = None) -> List[int]:
+def divisors(n: int, fact: Mapping[int, int] | None = None) -> list[int]:
     """Return a list of all divisors of `n`."""
     fact = fact or factorisation(n)
     divs = [1]
@@ -440,8 +440,8 @@ def divisors(n: int, fact: Optional[Mapping[int, int]] = None) -> List[int]:
 
 
 def factorisations(
-    n: int, fact: Optional[Mapping[int, int]] = None
-) -> List[Sequence[int]]:
+    n: int, fact: Mapping[int, int] | None = None
+) -> Iterator[Sequence[int]]:
     """Return a list of all factorisations of `n`."""
     fact = fact or factorisation(n)
 
@@ -472,20 +472,20 @@ def factorisations(
     yield from generator(n, n)
 
 
-def omega(n: int, fact: Optional[Mapping[int, int]] = None) -> int:
+def omega(n: int, fact: Mapping[int, int] | None = None) -> int:
     """Return the omega of `n`. This is the number of distinct prime factors of
     `n`."""
     fact = fact or factorisation(n)
     return len(fact)
 
 
-def ndiv(n: int, fact: Optional[Mapping[int, int]] = None) -> int:
+def ndiv(n: int, fact: Mapping[int, int] | None = None) -> int:
     """Return the number of divisors of `n`."""
     fact = fact or factorisation(n)
     return prod(e + 1 for e in fact.values())
 
 
-def sigma(n: int, k: int = 1, fact: Optional[Mapping[int, int]] = None) -> int:
+def sigma(n: int, k: int = 1, fact: Mapping[int, int] | None = None) -> int:
     """Return the sigma of `n`. This is the sum of the divisors of n, raised to
     the power `k`."""
     if k == 0:
@@ -496,13 +496,13 @@ def sigma(n: int, k: int = 1, fact: Optional[Mapping[int, int]] = None) -> int:
     return prod((p ** ((e + 1) * k) - 1) // (p**k - 1) for p, e in fact.items())
 
 
-def totient(n: int, fact: Optional[Mapping[int, int]] = None) -> int:
+def totient(n: int, fact: Mapping[int, int] | None = None) -> int:
     """Return the Euler totient of `n`."""
     fact = fact or factorisation(n)
     return prod(p ** (e - 1) * (p - 1) for p, e in fact.items())
 
 
-def mobius(n: int, fact: Optional[Mapping[int, int]] = None) -> int:
+def mobius(n: int, fact: Mapping[int, int] | None = None) -> int:
     """Return the value of the Mobius function of `n`."""
     if n == 1:
         return 1
@@ -510,13 +510,13 @@ def mobius(n: int, fact: Optional[Mapping[int, int]] = None) -> int:
     return 0 if fact.most_common(1)[0][1] > 1 else (-1) ** len(fact)
 
 
-def rad(n: int, fact: Optional[Mapping[int, int]] = None) -> int:
+def rad(n: int, fact: Mapping[int, int] | None = None) -> int:
     """Return the radical of `n`."""
     fact = fact or factorisation(n)
     return prod(fact)
 
 
-def sum_squares(n: int, fact: Optional[Mapping[int, int]] = None) -> int:
+def sum_squares(n: int, fact: Mapping[int, int] | None = None) -> int:
     """Return the number of ways `n` can be written as a sum of two squares."""
     fact = fact or factorisation(n)
     ans = 1
@@ -531,8 +531,8 @@ def sum_squares(n: int, fact: Optional[Mapping[int, int]] = None) -> int:
 def group_order(
     a: int,
     mod: int,
-    phi: Optional[int] = None,
-    phi_fact: Optional[Mapping[int, int]] = None,
+    phi: int | None = None,
+    phi_fact: Mapping[int, int] | None = None,
 ) -> int:
     """Return the order of `a` in the group of integers mod `mod`."""
     if mathgcd(a, mod) != 1:
@@ -551,7 +551,7 @@ def group_order(
 
 
 def is_primitive_root(
-    a: int, p: int, phi_fact: Optional[Mapping[int, int]] = None
+    a: int, p: int, phi_fact: Mapping[int, int] | None = None
 ) -> bool:
     """Return True if `a` is a primitive root in the group of integers mod `p`,
     False otherwise."""
@@ -559,15 +559,16 @@ def is_primitive_root(
     return a % p != 0 and all(pow(a, (p - 1) // q, p) != 1 for q in phi_fact)
 
 
-def primitive_root(p: int, phi_fact: Optional[Mapping[int, int]] = None) -> int:
+def primitive_root(p: int, phi_fact: Mapping[int, int] | None = None) -> int:
     """Return a primitive root in the group of integers mod `p`."""
     phi_fact = phi_fact or factorisation(p - 1)
     for a in range(1, p):
         if is_primitive_root(a, p, phi_fact):
             return a
+    raise ValueError
 
 
-def fibonacci_period(n: int, fact: Optional[Mapping[int, int]] = None) -> int:
+def fibonacci_period(n: int, fact: Mapping[int, int] | None = None) -> int:
     """Return a period (not necessarily the minimal period) of the Fibonacci
     sequence modulo `n`."""
     fact = fact or factorisation(n)
@@ -585,7 +586,7 @@ def fibonacci_period(n: int, fact: Optional[Mapping[int, int]] = None) -> int:
     return ans
 
 
-def primality_list(end: int) -> List[bool]:
+def primality_list(end: int) -> list[bool]:
     """Return a list of length `end`, the i-th element of which is True if i is
     prime, and False otherwise."""
     if end <= 1:
@@ -600,18 +601,18 @@ def primality_list(end: int) -> List[bool]:
     return ans
 
 
-def primes_list(end: int) -> List[int]:
+def primes_list(end: int) -> list[int]:
     """Return a list of primes up to but not including `end`."""
     return list(compress(range(end), primality_list(end)))
 
 
-def prime_count_list(end: int) -> List[int]:
+def prime_count_list(end: int) -> list[int]:
     """Return a list of length `end`, the i-th element of which is the number of
     primes less than or equal to i."""
     return list(accumulate(map(int, primality_list(end))))
 
 
-def prime_factor_list(end: int) -> List[int]:
+def prime_factor_list(end: int) -> list[int]:
     """Return a list of length `end`, the i-th element of which is the smallest
     prime factor of i."""
     ans = list(range(end))
@@ -623,7 +624,7 @@ def prime_factor_list(end: int) -> List[int]:
     return ans
 
 
-def max_prime_factor_list(end: int) -> List[int]:
+def max_prime_factor_list(end: int) -> list[int]:
     """Return a list of length `end`, the i-th element of which is the largest
     prime factor of i."""
     ans = prime_factor_list(end)
@@ -636,7 +637,7 @@ def max_prime_factor_list(end: int) -> List[int]:
 _prime_factors = prime_factor_list(PRIME_FACTORS_END)
 
 
-def omega_list(end: int, prime_factors: Optional[List[int]] = None) -> List[int]:
+def omega_list(end: int, prime_factors: list[int] | None = None) -> list[int]:
     """Return a list of length `end`, the i-th element of which is the omega of
     i. This is the number of distinct prime factors of i."""
     ans = _prepare_prime_factors(prime_factors, end)
@@ -650,7 +651,7 @@ def omega_list(end: int, prime_factors: Optional[List[int]] = None) -> List[int]
     return ans
 
 
-def ndiv_list(end: int, prime_factors: Optional[List[int]] = None) -> List[int]:
+def ndiv_list(end: int, prime_factors: list[int] | None = None) -> list[int]:
     """Return a list of length `end`, the i-th element of which is the number of
     divisors of i."""
     ans = _prepare_prime_factors(prime_factors, end)
@@ -667,8 +668,8 @@ def ndiv_list(end: int, prime_factors: Optional[List[int]] = None) -> List[int]:
 
 
 def sigma_list(
-    end: int, k: int = 1, prime_factors: Optional[List[int]] = None
-) -> List[int]:
+    end: int, k: int = 1, prime_factors: list[int] | None = None
+) -> list[int]:
     """Return a list of length `end`, the i-th element of which is the sigma of
     i. This is the sum of the divisors of i, raised to the power `k`."""
     if k == 0:
@@ -688,7 +689,7 @@ def sigma_list(
     return ans
 
 
-def totient_list(end: int, prime_factors: Optional[List[int]] = None) -> List[int]:
+def totient_list(end: int, prime_factors: list[int] | None = None) -> list[int]:
     """Return a list of length `end`, the i-th element of which is the Euler
     totient of i."""
     ans = _prepare_prime_factors(prime_factors, end)
@@ -700,7 +701,7 @@ def totient_list(end: int, prime_factors: Optional[List[int]] = None) -> List[in
     return ans
 
 
-def mobius_list(end: int, prime_factors: Optional[List[int]] = None) -> List[int]:
+def mobius_list(end: int, prime_factors: list[int] | None = None) -> list[int]:
     """Return a list of length `end`, the i-th element of which is the value of
     the Mobius function of i."""
     ans = _prepare_prime_factors(prime_factors, end)
@@ -712,7 +713,7 @@ def mobius_list(end: int, prime_factors: Optional[List[int]] = None) -> List[int
     return ans
 
 
-def rad_list(end: int, prime_factors: Optional[List[int]] = None) -> List[int]:
+def rad_list(end: int, prime_factors: list[int] | None = None) -> list[int]:
     """Return a list of length `end`, the i-th element of which is the radical
     of i."""
     ans = _prepare_prime_factors(prime_factors, end)
@@ -724,7 +725,7 @@ def rad_list(end: int, prime_factors: Optional[List[int]] = None) -> List[int]:
     return ans
 
 
-def sum_squares_list(end: int, prime_factors: Optional[List[int]] = None) -> List[int]:
+def sum_squares_list(end: int, prime_factors: list[int] | None = None) -> list[int]:
     """Return a list of length `end`, the i-th element of which is the number of
     ways i can be written as a sum of two squares."""
     ans = _prepare_prime_factors(prime_factors, end)
@@ -800,7 +801,7 @@ class PrimeSieve:
     """A expanding prime sieve using Eratosthenes's algorithm."""
 
     _end: int
-    _primes_list: List[int]
+    _primes_list: list[int]
 
     __slots__ = ("_end", "_primes_list")
 

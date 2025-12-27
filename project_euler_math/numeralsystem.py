@@ -1,5 +1,4 @@
 import string
-from typing import List, Dict
 
 ALPHABET = string.digits + string.ascii_letters
 
@@ -13,8 +12,8 @@ class NumeralSystem:
     _base: int
     _chunksize: int
     _pow_base: int
-    _cache: List[str]
-    _reverse: Dict[str, int]
+    _cache: list[str]
+    _reverse: dict[str, int]
 
     __slots__ = ("_symbols", "_base", "_chunksize", "_pow_base", "_cache", "_reverse")
 
@@ -56,7 +55,7 @@ class NumeralSystem:
         self._reverse = {s: i for i, s in enumerate(cache)}
 
     @staticmethod
-    def _build_cache(symbols: str, cache_pow: int) -> List[str]:
+    def _build_cache(symbols: str, cache_pow: int) -> list[str]:
         cache = [""]
         for _ in range(cache_pow):
             cache = [s + c for s in symbols for c in cache]

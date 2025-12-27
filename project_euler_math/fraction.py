@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from numbers import Rational, Integral
-from typing import Generic, TypeVar, Tuple
+from typing import Generic, TypeVar
 
 from project_euler_math.eisenstein import Eisenstein
 from project_euler_math.gaussian import Gaussian
@@ -119,7 +119,7 @@ class Fraction(Generic[E]):
 
     def __divmod__(
         self, other: E | Fraction[E] | Rational
-    ) -> Tuple[Fraction[E], Fraction[E]]:
+    ) -> tuple[Fraction[E], Fraction[E]]:
         if isinstance(other, (Fraction, Rational)):
             div, rem = divmod(self._p * other.denominator, other.numerator * self._q)
             return div, Fraction(rem, self._q * other.denominator)
@@ -175,7 +175,7 @@ class Fraction(Generic[E]):
         else:
             return Fraction((other * self._q) % self._p, self._q)
 
-    def __rdivmod__(self, other: E | Rational) -> Tuple[Fraction[E], Fraction[E]]:
+    def __rdivmod__(self, other: E | Rational) -> tuple[Fraction[E], Fraction[E]]:
         if isinstance(other, Rational):
             div, rem = divmod(other.numerator * self._q, self._p * other.denominator)
             return div, Fraction(rem, other.denominator * self._q)

@@ -3,7 +3,7 @@ from __future__ import annotations
 from functools import reduce
 from math import inf
 from numbers import Integral
-from typing import List, TypeVar, Generic, Iterable, Tuple, Callable, Optional
+from typing import TypeVar, Generic, Iterable, Callable
 
 T = TypeVar("T")
 R = TypeVar("R")
@@ -14,12 +14,12 @@ _PolynomialKey = int | slice
 class Polynomial(Generic[T]):
     """A polynomial in a single variable."""
 
-    _coeffs: List[T]
+    _coeffs: list[T]
 
     __slots__ = "_coeffs"
 
     @property
-    def coeffs(self) -> List[T]:
+    def coeffs(self) -> list[T]:
         return self._coeffs
 
     @property
@@ -39,7 +39,7 @@ class Polynomial(Generic[T]):
             self._coeffs.pop()
         return self
 
-    def __init__(self, coeffs: Optional[Polynomial[T] | Iterable[T]] = None) -> None:
+    def __init__(self, coeffs: Polynomial[T] | Iterable[T] | None = None) -> None:
         if coeffs is None:
             self._coeffs = []
 
@@ -121,7 +121,7 @@ class Polynomial(Generic[T]):
         else:
             return dm[1]
 
-    def __divmod__(self, other: Polynomial[T]) -> Tuple[Polynomial[T], Polynomial[T]]:
+    def __divmod__(self, other: Polynomial[T]) -> tuple[Polynomial[T], Polynomial[T]]:
         if isinstance(other, Polynomial):
             if self.degree < other.degree:
                 return self._create([]), self
@@ -174,7 +174,7 @@ class Polynomial(Generic[T]):
     def __rmod__(self, other: T) -> Polynomial[T]:
         return self._create([other]) % self
 
-    def __rdivmod__(self, other: T) -> Tuple[Polynomial[T], Polynomial[T]]:
+    def __rdivmod__(self, other: T) -> tuple[Polynomial[T], Polynomial[T]]:
         # noinspection PyTypeChecker
         return divmod(self._create([other]), self)
 

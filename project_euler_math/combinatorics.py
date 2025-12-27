@@ -1,6 +1,6 @@
 from itertools import accumulate, count, product
 from math import prod, factorial, isqrt, comb
-from typing import Iterator, Sequence, List
+from typing import Iterator, Sequence
 
 from project_euler_math.matrix import Matrix, Vector
 
@@ -28,7 +28,7 @@ def bell(n: int) -> int:
     return bell_list(n + 1)[-1]
 
 
-def bell_list(end: int) -> List[int]:
+def bell_list(end: int) -> list[int]:
     """Return a list of length `end`, the i-th element of which is the i-th Bell
     number."""
     combs = [0] * end
@@ -47,7 +47,7 @@ def partition(n: int) -> int:
     return partition_list(n + 1)[-1]
 
 
-def partition_list(end: int) -> List[int]:
+def partition_list(end: int) -> list[int]:
     """Return a list of length `end`, the i-th element of which is the partition
     number of i."""
     partitions = [0] * end
@@ -67,7 +67,7 @@ def partition_sequence(n: int, seq: Sequence[int]) -> int:
     return partition_sequence_list(n + 1, seq)[-1]
 
 
-def partition_sequence_list(end: int, seq: Sequence[int]) -> List[int]:
+def partition_sequence_list(end: int, seq: Sequence[int]) -> list[int]:
     """Return a list of length `end`, the i-th element of which is the number of
     ways i can be partitioned (ignoring order) into partitions of sizes
     specified in `seq`."""

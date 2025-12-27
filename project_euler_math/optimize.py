@@ -1,4 +1,4 @@
-from typing import Callable, Optional
+from typing import Callable
 
 from project_euler_math.matrix import Vector
 
@@ -6,7 +6,7 @@ from project_euler_math.matrix import Vector
 def nelder_mead(
     f: Callable[..., float],
     x0: Vector,
-    deltas: Optional[Vector] = None,
+    deltas: Vector | None = None,
     scale=1.0,
     args: tuple = (),
     ftol: float = 1e-12,

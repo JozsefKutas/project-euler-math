@@ -1,4 +1,4 @@
-from typing import Callable, Optional
+from typing import Callable
 
 
 def newton_raphson(
@@ -29,7 +29,7 @@ def newton_raphson(
 def secant(
     f: Callable[..., float],
     x0: float,
-    x1: Optional[float] = None,
+    x1: float | None = None,
     args: tuple = (),
     tol: float = 1e-8,
     maxiter: int = 50,
