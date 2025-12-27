@@ -325,7 +325,7 @@ def factorisation(
     pollard_rho_args: Optional[Mapping[int, int]] = None,
     prime_factors: Optional[Sequence[int]] = None,
 ) -> typing.Counter[int]:
-    """Return the prime factorisation of `n`. First tries trail division using
+    """Return the prime factorisation of `n`. First tries trial division using
     the wheel factorisation approach up to the specified limit, then uses
     Pollard's rho heuristic for larger factors."""
 
