@@ -13,7 +13,7 @@ class PrimeSieve:
 
     __slots__ = ('_end', '_primes_list')
 
-    EXPAND_FACTOR = 2
+    EXPAND_FACTOR = 1.5
 
     def __init__(self, end: int = 1_000_000) -> None:
         self._end = end
