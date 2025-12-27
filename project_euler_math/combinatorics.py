@@ -1,8 +1,7 @@
-from math import prod, factorial, isqrt, comb
 from itertools import accumulate, count, product
+from math import prod, factorial, isqrt, comb
 from typing import Iterator, Sequence, List
 
-from project_euler_math.ntheory import sigma_list
 from project_euler_math.matrix import Matrix, Vector
 
 

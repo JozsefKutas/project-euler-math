@@ -16,8 +16,7 @@ class NumeralSystem:
     _cache: List[str]
     _reverse: Dict[str, int]
 
-    __slots__ = ('_symbols', '_base',
-                 '_chunksize', '_pow_base', '_cache', '_reverse')
+    __slots__ = ("_symbols", "_base", "_chunksize", "_pow_base", "_cache", "_reverse")
 
     @property
     def symbols(self) -> str:
@@ -31,8 +30,9 @@ class NumeralSystem:
     def cache_pow(self) -> int:
         return self._chunksize
 
-    def __init__(self, symbols: str = None, base: int = None,
-                 chunksize: int = 1) -> None:
+    def __init__(
+        self, symbols: str = None, base: int = None, chunksize: int = 1
+    ) -> None:
 
         if symbols is None and base is None:
             raise ValueError
@@ -51,13 +51,13 @@ class NumeralSystem:
         self._symbols = symbols
         self._base = base
         self._chunksize = chunksize
-        self._pow_base = base ** chunksize
+        self._pow_base = base**chunksize
         self._cache = cache
         self._reverse = {s: i for i, s in enumerate(cache)}
 
     @staticmethod
     def _build_cache(symbols: str, cache_pow: int) -> List[str]:
-        cache = ['']
+        cache = [""]
         for _ in range(cache_pow):
             cache = [s + c for s in symbols for c in cache]
         return cache
@@ -66,7 +66,7 @@ class NumeralSystem:
         if n == 0:
             return self.symbols[0]
         elif n < 0:
-            return '-' + self.represent(-n)
+            return "-" + self.represent(-n)
 
         cache = self._cache
         pow_base = self._pow_base
@@ -74,12 +74,12 @@ class NumeralSystem:
         while n:
             n, d = divmod(n, pow_base)
             representation.append(cache[d])
-        return ''.join(reversed(representation)).lstrip('0')
+        return "".join(reversed(representation)).lstrip("0")
 
     def int_value(self, representation: str) -> int:
         representation = representation.strip()
 
-        if representation[0] == '-':
+        if representation[0] == "-":
             return -self.int_value(representation[1:])
 
         reverse = self._reverse
@@ -90,9 +90,9 @@ class NumeralSystem:
         representation = representation.zfill(width)
         for i in range(0, len(representation), cache_pow):
             n *= pow_base
-            s = representation[i:i+cache_pow]
+            s = representation[i : i + cache_pow]
             n += reverse[s]
         return n
 
     def __repr__(self) -> str:
-        return type(self).__name__ + f'({self._symbols!r})'
+        return type(self).__name__ + f"({self._symbols!r})"

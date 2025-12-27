@@ -1,14 +1,14 @@
 from __future__ import annotations
 
-from fractions import Fraction
+import re
 from collections import namedtuple
 from decimal import Decimal
-import re
+from fractions import Fraction
 from typing import Optional, Literal
 
 RepeatingDecimalTuple = namedtuple(
-    'RepeatingDecimalTuple',
-    'sign initial exponent repetend')
+    "RepeatingDecimalTuple", "sign initial exponent repetend"
+)
 
 
 class RepeatingDecimal:
@@ -19,7 +19,7 @@ class RepeatingDecimal:
     _repetend: Optional[str]
     _sign: Literal[0, 1]
 
-    __slots__ = ('_exponent', '_initial', '_repetend', '_sign')
+    __slots__ = ("_exponent", "_initial", "_repetend", "_sign")
 
     @property
     def exponent(self) -> int:
@@ -37,20 +37,19 @@ class RepeatingDecimal:
     def sign(self):
         return self._sign
 
-    def __init__(self, value: str | RepeatingDecimal | int | Decimal = '0') -> None:
+    def __init__(self, value: str | RepeatingDecimal | int | Decimal = "0") -> None:
         if isinstance(value, str):
-            m = _parser(value.strip().replace('_', ''))
+            m = _parser(value.strip().replace("_", ""))
             if m is None:
-                raise ValueError(
-                    f'Invalid literal for RepeatingDecimal: {value!r}')
+                raise ValueError(f"Invalid literal for RepeatingDecimal: {value!r}")
 
-            intpart = m.group('int')
-            fracpart = m.group('frac') or ''
-            repetend = m.group('repetend')
+            intpart = m.group("int")
+            fracpart = m.group("frac") or ""
+            repetend = m.group("repetend")
             self._exponent = -len(fracpart)
-            self._initial = (intpart + fracpart).lstrip('0')
+            self._initial = (intpart + fracpart).lstrip("0")
             self._repetend = repetend
-            self._sign = 1 if m.group('sign') == '-' else 0  # noqa
+            self._sign = 1 if m.group("sign") == "-" else 0  # noqa
 
         elif isinstance(value, RepeatingDecimal):
             self._exponent = value._exponent
@@ -67,21 +66,25 @@ class RepeatingDecimal:
         elif isinstance(value, Decimal):
             tup = value.as_tuple()
             self._exponent = tup.exponent
-            self._initial = ''.join(map(str, tup.digits))
+            self._initial = "".join(map(str, tup.digits))
             self._repetend = None
             self._sign = tup.sign  # noqa
 
         elif isinstance(value, (list, tuple)):
             if len(value) != 4:
-                raise ValueError('Invalid tuple size in creation of '
-                                 'RepeatingDecimal from list or tuple. The '
-                                 'list or tuple should have exactly four '
-                                 'elements.')
+                raise ValueError(
+                    "Invalid tuple size in creation of "
+                    "RepeatingDecimal from list or tuple. The "
+                    "list or tuple should have exactly four "
+                    "elements."
+                )
 
             if not (isinstance(value[0], int) and value[0] in (0, 1)):
-                raise ValueError('Invalid sign. The first value in the tuple '
-                                 'should be an integer; either 0 for a '
-                                 'positive number or 1 for a negative number.')
+                raise ValueError(
+                    "Invalid sign. The first value in the tuple "
+                    "should be an integer; either 0 for a "
+                    "positive number or 1 for a negative number."
+                )
             self._sign = value[0]
 
             initial = []
@@ -91,21 +94,24 @@ class RepeatingDecimal:
                     if initial or d != 0:
                         initial.append(d)
                 else:
-                    raise ValueError('The second value in the tuple must be '
-                                     'composed of integers in the range 0 '
-                                     'through 9.')
+                    raise ValueError(
+                        "The second value in the tuple must be "
+                        "composed of integers in the range 0 "
+                        "through 9."
+                    )
 
-            self._initial = ''.join(map(str, initial))
+            self._initial = "".join(map(str, initial))
 
             if not isinstance(value[2], int):
-                raise ValueError('The third value in the tuple must be an '
-                                 'integer.')
+                raise ValueError("The third value in the tuple must be an " "integer.")
             self._exponent = value[2]
 
             if not all(isinstance(d, int) and 0 <= d <= 9 for d in value[3]):
-                raise ValueError('The fourth value in the tuple must be '
-                                 'composed of integers in the range 0 through '
-                                 '9.')
+                raise ValueError(
+                    "The fourth value in the tuple must be "
+                    "composed of integers in the range 0 through "
+                    "9."
+                )
 
             self._repetend = None
 
@@ -117,7 +123,8 @@ class RepeatingDecimal:
             self._sign,
             tuple(map(int, self._initial)),
             self._exponent,
-            tuple(map(int, self._repetend)) if self._repetend is not None else None)
+            tuple(map(int, self._repetend)) if self._repetend is not None else None,
+        )
 
     @classmethod
     def _from_state(cls, exp, initial, repetend, sign) -> RepeatingDecimal:
@@ -129,8 +136,7 @@ class RepeatingDecimal:
         return self
 
     @classmethod
-    def from_fraction(cls, fraction: Fraction = Fraction(0, 1))\
-            -> RepeatingDecimal:
+    def from_fraction(cls, fraction: Fraction = Fraction(0, 1)) -> RepeatingDecimal:
         sign = 0 if fraction >= 0 else 1
         p = abs(fraction.numerator)
         q = abs(fraction.denominator)
@@ -151,7 +157,7 @@ class RepeatingDecimal:
 
         # noinspection PyTypeChecker
         n, p = divmod(p, q)
-        initial = str(n) if n else ''
+        initial = str(n) if n else ""
 
         if p == 0:
             repetend = None
@@ -173,7 +179,7 @@ class RepeatingDecimal:
         q1 = 10**-self._exponent
         initial = Fraction(int(self._initial) if self._initial else 0, q1)
         if self._repetend:
-            q2 = (10**len(self._repetend) - 1) * q1
+            q2 = (10 ** len(self._repetend) - 1) * q1
             repetend = Fraction(int(self._repetend), q2)
             fraction = initial + repetend
         else:
@@ -193,39 +199,46 @@ class RepeatingDecimal:
         else:
             initial = self._initial
             if i < len(initial):
-                return self._initial[len(initial)-i-1]
+                return self._initial[len(initial) - i - 1]
             else:
                 return 0
 
     def __eq__(self, other):
         if isinstance(other, RepeatingDecimal):
-            return ((self._exponent, self._initial, self._repetend, self._sign)
-                    == (other._exponent, other._initial, other._repetend, other._sign))
+            return (self._exponent, self._initial, self._repetend, self._sign) == (
+                other._exponent,
+                other._initial,
+                other._repetend,
+                other._sign,
+            )
         return NotImplemented
 
     def __hash__(self):
         return hash((self._exponent, self._initial, self._repetend, self._sign))
 
     def __repr__(self) -> str:
-        return type(self).__name__ + f'(\'{self!s}\')'
+        return type(self).__name__ + f"('{self!s}')"
 
     def __str__(self) -> str:
-        sign = '-' if self._sign else ''
+        sign = "-" if self._sign else ""
         initial = self._initial.zfill(-self._exponent + 1)
         i = len(initial) + self._exponent
-        nonrepetend = sign + initial[:i] + '.' + initial[i:]
+        nonrepetend = sign + initial[:i] + "." + initial[i:]
         if self._repetend:
-            repetend = '(' + self._repetend + ')'
+            repetend = "(" + self._repetend + ")"
             return nonrepetend + repetend
         else:
-            return nonrepetend.rstrip('.')
+            return nonrepetend.rstrip(".")
 
 
-_parser = re.compile(r'''
+_parser = re.compile(
+    r"""
     (?P<sign>[-+])?
     (?P<int>\d*)
     (
         (\.(?P<frac>\d*))
         (\((?P<repetend>\d*)\))?
     )?
-''', re.VERBOSE | re.IGNORECASE).fullmatch
+""",
+    re.VERBOSE | re.IGNORECASE,
+).fullmatch

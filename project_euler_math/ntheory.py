@@ -1,26 +1,24 @@
 import typing
-from math import prod, inf, isqrt, gcd as mathgcd, lcm as mathlcm
+from collections import Counter
 from fractions import Fraction
+from itertools import compress, count, accumulate
+from math import prod, inf, isqrt, gcd as mathgcd, lcm as mathlcm
 from numbers import Integral
 from random import Random
-from itertools import compress, count, accumulate
-from collections import Counter
-from typing import (
-    Sequence, List, Mapping, Optional, Iterator, Callable, TypeVar)
+from typing import Sequence, List, Mapping, Optional, Iterator, Callable, TypeVar
 
 from project_euler_math.eisenstein import Eisenstein
 from project_euler_math.gaussian import Gaussian
 from project_euler_math.polynomial import Polynomial
 
-
 PRIME_FACTORS_END = 10000
 
 
-E = TypeVar('E', Integral, Gaussian, Eisenstein, Polynomial)
+E = TypeVar("E", Integral, Gaussian, Eisenstein, Polynomial)
 
 
 def inrt(n: int, k: int) -> int:
-    """ Return the integer part of the `k`-th root of a non-negative integer
+    """Return the integer part of the `k`-th root of a non-negative integer
     `n`."""
     if n < 0:
         raise ValueError
@@ -47,7 +45,7 @@ def inrt(n: int, k: int) -> int:
 
 def _is_square_mod(mod: int):
     ans = [False for _ in range(mod)]
-    for i in range((mod+1) // 2):
+    for i in range((mod + 1) // 2):
         ans[(i * i) % mod] = True
     return ans
 
@@ -59,8 +57,12 @@ _is_square65 = _is_square_mod(65)
 
 def is_square(n: int) -> bool:
     """Return True is `n` is a square, False otherwise."""
-    return (_is_square64[n & 0b111111] and _is_square63[n % 63]
-            and _is_square65[n % 65] and isqrt(n) ** 2 == n)
+    return (
+        _is_square64[n & 0b111111]
+        and _is_square63[n % 63]
+        and _is_square65[n % 65]
+        and isqrt(n) ** 2 == n
+    )
 
 
 def gcd(m: E, n: E) -> E:
@@ -125,7 +127,7 @@ def crt2(a: E, b: E, m: E, n: E) -> E:
     inv = mod_inverse(m, n)
     if inv is None:
         raise ValueError
-    return (a + (b-a) * m * inv) % (m * n)
+    return (a + (b - a) * m * inv) % (m * n)
 
 
 def crt2_noncoprime(a: E, b: E, m: E, n: E) -> Optional[E]:
@@ -133,7 +135,7 @@ def crt2_noncoprime(a: E, b: E, m: E, n: E) -> Optional[E]:
     `m` and `n` need not be coprime. If there exists no solution, returns
     None."""
     d, s, t = bezout(m, n)
-    q, r = divmod(b-a, d)
+    q, r = divmod(b - a, d)
     if r != 0:
         return None
     return (a + q * m * s) % ((m * n) // d)
@@ -142,7 +144,7 @@ def crt2_noncoprime(a: E, b: E, m: E, n: E) -> Optional[E]:
 def farey_sequence(n: int) -> List[Fraction]:
     """Return the Farey sequence of order `n`."""
     seq = [Fraction(0), Fraction(1)]
-    for q in range(2, n+1):
+    for q in range(2, n + 1):
         for p in range(1, q):
             if mathgcd(p, q) == 1:
                 seq.append(Fraction(p, q))
@@ -155,8 +157,8 @@ def left_farey(n: int, x: Fraction) -> Fraction:
     `n`."""
     _, s, t = bezout(x.denominator, x.numerator)
     k = (n - t) // x.denominator
-    s -= k*x.numerator
-    t += k*x.denominator
+    s -= k * x.numerator
+    t += k * x.denominator
     return Fraction(-s, t)
 
 
@@ -165,8 +167,8 @@ def right_farey(n: int, x: Fraction) -> Fraction:
     `n`."""
     _, s, t = bezout(x.denominator, x.numerator)
     k = (n + t) // x.denominator
-    s += k*x.numerator
-    t -= k*x.denominator
+    s += k * x.numerator
+    t -= k * x.denominator
     return Fraction(s, -t)
 
 
@@ -191,11 +193,11 @@ def tonelli_shanks(a: int, p: int, seed=42) -> int:
     """Return a square root of `a` mod `p`, if `a` is a quadratic residue."""
     a %= p
     if p % 4 == 3:
-        x = pow(a, (p+1) // 4, p)
+        x = pow(a, (p + 1) // 4, p)
     elif p % 8 == 5:
-        x = pow(a, (p+3) // 8, p)
+        x = pow(a, (p + 3) // 8, p)
         if pow(x, 2, p) != a:
-            x = (x * pow(2, (p-1) // 4, p)) % p
+            x = (x * pow(2, (p - 1) // 4, p)) % p
     else:
         d = _quadratic_nonresidue(p, seed)
         s = 0
@@ -206,12 +208,12 @@ def tonelli_shanks(a: int, p: int, seed=42) -> int:
         at = pow(a, t, p)
         dt = pow(d, t, p)
         m = 0
-        pow2 = 1 << s-1
+        pow2 = 1 << s - 1
         for i in range(s):
             if pow(at * pow(dt, m, p), pow2, p) == p - 1:
                 m += 1 << i
             pow2 //= 2
-        x = (pow(a, (t+1) // 2, p) * pow(dt, m // 2, p)) % p
+        x = (pow(a, (t + 1) // 2, p) * pow(dt, m // 2, p)) % p
     return x
 
 
@@ -261,7 +263,7 @@ def is_prime(n: int, prime_factors: Optional[Sequence[int]] = None) -> bool:
     elif n < 3_317_044_064_679_887_385_961_981:
         return miller_rabin(n, (2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41))
 
-    raise ValueError(f'n out of range: {n}')
+    raise ValueError(f"n out of range: {n}")
 
 
 def miller_rabin(n: int, bases: Sequence[int] = None) -> bool:
@@ -281,11 +283,11 @@ def _miller_rabin_witness(n: int, a: int, s: int, t: int) -> bool:
         return False
 
     b = pow(a, t, n)
-    if b == n-1 or b == 1:
+    if b == n - 1 or b == 1:
         return False
     for _ in range(s):
         b = pow(b, 2, n)
-        if b == n-1:
+        if b == n - 1:
             return False
     return True
 
@@ -310,14 +312,19 @@ def padic_val(n: int, p: int) -> int | float:
     return e
 
 
-_wheel = [x-11 for x in range(11, 11+210)
-          if x % 2 != 0 and x % 3 != 0 and x % 5 != 0 and x % 7 != 0]
+_wheel = [
+    x - 11
+    for x in range(11, 11 + 210)
+    if x % 2 != 0 and x % 3 != 0 and x % 5 != 0 and x % 7 != 0
+]
 
 
-def factorisation(n: int, trial_div_limit: int = 10000,
-                  pollard_rho_args: Optional[Mapping[int, int]] = None,
-                  prime_factors: Optional[Sequence[int]] = None)\
-        -> typing.Counter[int]:
+def factorisation(
+    n: int,
+    trial_div_limit: int = 10000,
+    pollard_rho_args: Optional[Mapping[int, int]] = None,
+    prime_factors: Optional[Sequence[int]] = None,
+) -> typing.Counter[int]:
     """Return the prime factorisation of `n`. First tries trail division using
     the wheel factorisation approach up to the specified limit, then uses
     Pollard's rho heuristic for larger factors."""
@@ -398,12 +405,11 @@ def factorisation(n: int, trial_div_limit: int = 10000,
     return ans
 
 
-def pollard_rho(n: int, a=1, seed=42, k=1,
-                f: Callable[[int], int] = None) -> int:
+def pollard_rho(n: int, a=1, seed=42, k=1, f: Callable[[int], int] = None) -> int:
     """Find a proper factor of `n` using Pollard's rho heuristic. Floyd's
     tortoise and hare algorithm is used to detect cycles."""
 
-    f = f or (lambda x: (x*x + a) % n)
+    f = f or (lambda x: (x * x + a) % n)
     rand = Random(seed)
 
     while True:
@@ -413,7 +419,7 @@ def pollard_rho(n: int, a=1, seed=42, k=1,
             for i in range(k):
                 u = f(u)
                 v = f(f(v))
-                prod_umv = (prod_umv * (u-v)) % n
+                prod_umv = (prod_umv * (u - v)) % n
             g = mathgcd(prod_umv, n)
             if g != 1:
                 if g != n:
@@ -428,13 +434,14 @@ def divisors(n: int, fact: Optional[Mapping[int, int]] = None) -> List[int]:
     for p, e in fact.items():
         divs_ppow = divs
         for _ in range(e):
-            divs_ppow = [d*p for d in divs_ppow]
+            divs_ppow = [d * p for d in divs_ppow]
             divs.extend(divs_ppow)
     return divs
 
 
-def factorisations(n: int, fact: Optional[Mapping[int, int]] = None)\
-        -> List[Sequence[int]]:
+def factorisations(
+    n: int, fact: Optional[Mapping[int, int]] = None
+) -> List[Sequence[int]]:
     """Return a list of all factorisations of `n`."""
     fact = fact or factorisation(n)
 
@@ -446,8 +453,8 @@ def factorisations(n: int, fact: Optional[Mapping[int, int]] = None)\
             divs = divs_d
             for _ in range(e):
                 ppow *= p
-                divs = divs + [dd*ppow for dd in divs_d]
-                div_divs[d*ppow] = divs
+                divs = divs + [dd * ppow for dd in divs_d]
+                div_divs[d * ppow] = divs
 
     for divs in div_divs.values():
         divs.sort()
@@ -475,7 +482,7 @@ def omega(n: int, fact: Optional[Mapping[int, int]] = None) -> int:
 def ndiv(n: int, fact: Optional[Mapping[int, int]] = None) -> int:
     """Return the number of divisors of `n`."""
     fact = fact or factorisation(n)
-    return prod(e+1 for e in fact.values())
+    return prod(e + 1 for e in fact.values())
 
 
 def sigma(n: int, k: int = 1, fact: Optional[Mapping[int, int]] = None) -> int:
@@ -486,13 +493,13 @@ def sigma(n: int, k: int = 1, fact: Optional[Mapping[int, int]] = None) -> int:
     if n == 1:
         return 1
     fact = fact or factorisation(n)
-    return prod((p**((e+1)*k) - 1) // (p**k - 1) for p, e in fact.items())
+    return prod((p ** ((e + 1) * k) - 1) // (p**k - 1) for p, e in fact.items())
 
 
 def totient(n: int, fact: Optional[Mapping[int, int]] = None) -> int:
     """Return the Euler totient of `n`."""
     fact = fact or factorisation(n)
-    return prod(p**(e-1) * (p-1) for p, e in fact.items())
+    return prod(p ** (e - 1) * (p - 1) for p, e in fact.items())
 
 
 def mobius(n: int, fact: Optional[Mapping[int, int]] = None) -> int:
@@ -515,14 +522,18 @@ def sum_squares(n: int, fact: Optional[Mapping[int, int]] = None) -> int:
     ans = 1
     for p, e in fact.items():
         if p % 4 == 1:
-            ans *= (e+1)
+            ans *= e + 1
         elif p % 4 == 3 and e % 2 == 1:
             return 0
     return 4 * ans
 
 
-def group_order(a: int, mod: int, phi: Optional[int] = None,
-                phi_fact: Optional[Mapping[int, int]] = None) -> int:
+def group_order(
+    a: int,
+    mod: int,
+    phi: Optional[int] = None,
+    phi_fact: Optional[Mapping[int, int]] = None,
+) -> int:
     """Return the order of `a` in the group of integers mod `mod`."""
     if mathgcd(a, mod) != 1:
         raise ValueError
@@ -539,18 +550,18 @@ def group_order(a: int, mod: int, phi: Optional[int] = None,
     return ans
 
 
-def is_primitive_root(a: int, p: int,
-                      phi_fact: Optional[Mapping[int, int]] = None) -> bool:
+def is_primitive_root(
+    a: int, p: int, phi_fact: Optional[Mapping[int, int]] = None
+) -> bool:
     """Return True if `a` is a primitive root in the group of integers mod `p`,
     False otherwise."""
-    phi_fact = phi_fact or factorisation(p-1)
-    return a % p != 0 and all(pow(a, (p-1) // q, p) != 1 for q in phi_fact)
+    phi_fact = phi_fact or factorisation(p - 1)
+    return a % p != 0 and all(pow(a, (p - 1) // q, p) != 1 for q in phi_fact)
 
 
-def primitive_root(p: int,
-                   phi_fact: Optional[Mapping[int, int]] = None) -> int:
+def primitive_root(p: int, phi_fact: Optional[Mapping[int, int]] = None) -> int:
     """Return a primitive root in the group of integers mod `p`."""
-    phi_fact = phi_fact or factorisation(p-1)
+    phi_fact = phi_fact or factorisation(p - 1)
     for a in range(1, p):
         if is_primitive_root(a, p, phi_fact):
             return a
@@ -567,10 +578,10 @@ def fibonacci_period(n: int, fact: Optional[Mapping[int, int]] = None) -> int:
         elif p == 5:
             period = 20
         elif p % 5 in (1, 4):
-            period = p-1
+            period = p - 1
         else:
-            period = 2*(p+1)
-        ans = mathlcm(ans, period * p**(e-1))
+            period = 2 * (p + 1)
+        ans = mathlcm(ans, period * p ** (e - 1))
     return ans
 
 
@@ -651,12 +662,13 @@ def ndiv_list(end: int, prime_factors: Optional[List[int]] = None) -> List[int]:
         while j % p == 0:
             j //= p
             e += 1
-        ans[i] = (e+1) * ans[j]
+        ans[i] = (e + 1) * ans[j]
     return ans
 
 
-def sigma_list(end: int, k: int = 1, prime_factors: Optional[List[int]] = None)\
-        -> List[int]:
+def sigma_list(
+    end: int, k: int = 1, prime_factors: Optional[List[int]] = None
+) -> List[int]:
     """Return a list of length `end`, the i-th element of which is the sigma of
     i. This is the sum of the divisors of i, raised to the power `k`."""
     if k == 0:
@@ -672,12 +684,11 @@ def sigma_list(end: int, k: int = 1, prime_factors: Optional[List[int]] = None)\
         while j % p == 0:
             j //= p
             pek *= pk
-        ans[i] = (pek*pk - 1) // (pk - 1) * ans[j]
+        ans[i] = (pek * pk - 1) // (pk - 1) * ans[j]
     return ans
 
 
-def totient_list(end: int, prime_factors: Optional[List[int]] = None)\
-        -> List[int]:
+def totient_list(end: int, prime_factors: Optional[List[int]] = None) -> List[int]:
     """Return a list of length `end`, the i-th element of which is the Euler
     totient of i."""
     ans = _prepare_prime_factors(prime_factors, end)
@@ -685,12 +696,11 @@ def totient_list(end: int, prime_factors: Optional[List[int]] = None)\
     for i in range(2, end):
         p = ans[i]
         j = i // p
-        ans[i] = ans[j] * p if j % p == 0 else ans[j] * (p-1)
+        ans[i] = ans[j] * p if j % p == 0 else ans[j] * (p - 1)
     return ans
 
 
-def mobius_list(end: int, prime_factors: Optional[List[int]] = None)\
-        -> List[int]:
+def mobius_list(end: int, prime_factors: Optional[List[int]] = None) -> List[int]:
     """Return a list of length `end`, the i-th element of which is the value of
     the Mobius function of i."""
     ans = _prepare_prime_factors(prime_factors, end)
@@ -714,8 +724,7 @@ def rad_list(end: int, prime_factors: Optional[List[int]] = None) -> List[int]:
     return ans
 
 
-def sum_squares_list(end: int, prime_factors: Optional[List[int]] = None)\
-        -> List[int]:
+def sum_squares_list(end: int, prime_factors: Optional[List[int]] = None) -> List[int]:
     """Return a list of length `end`, the i-th element of which is the number of
     ways i can be written as a sum of two squares."""
     ans = _prepare_prime_factors(prime_factors, end)
@@ -733,7 +742,7 @@ def sum_squares_list(end: int, prime_factors: Optional[List[int]] = None)\
                 j //= p
                 e += 1
             if p % 4 == 1:
-                ans[i] = (e+1) * ans[j]
+                ans[i] = (e + 1) * ans[j]
             elif p % 4 == 3:
                 ans[i] = ans[j] if e % 2 == 0 else 0
             else:
@@ -762,7 +771,7 @@ def primality_iter(segment: int = 100_000) -> Iterator[int]:
     yield from primality
 
     n = segment
-    while n < segment ** 2:
+    while n < segment**2:
         primality[:] = [True] * segment
         for p in primes:
             start_index = max(p * p - n, -n % p)
@@ -793,7 +802,7 @@ class PrimeSieve:
     _end: int
     _primes_list: List[int]
 
-    __slots__ = ('_end', '_primes_list')
+    __slots__ = ("_end", "_primes_list")
 
     EXPAND_FACTOR = 1.5
 
@@ -809,8 +818,7 @@ class PrimeSieve:
             return self._primes_list[key]
 
         else:
-            raise TypeError("indices must be integers, not "
-                            + type(key).__name__)
+            raise TypeError("indices must be integers, not " + type(key).__name__)
 
     def __getitem__(self, key: int | slice) -> int:
         return self.prime(key)
@@ -821,15 +829,15 @@ class PrimeSieve:
 
         n = max(n, int(self._end * self.EXPAND_FACTOR))
 
-        while self._end ** 2 <= n:
-            self._do_extend_to_n(self._end ** 2)
+        while self._end**2 <= n:
+            self._do_extend_to_n(self._end**2)
         self._do_extend_to_n(n)
 
     def _do_extend_to_n(self, n: int) -> None:
         ext_size = n + 1 - len(self._primes_list)
         primality = [True] * ext_size
         for p in self._primes_list:
-            start_index = max(p*p - self._end, -self._end % p)
+            start_index = max(p * p - self._end, -self._end % p)
             if start_index >= ext_size:
                 break
             for i in range(start_index, ext_size, p):
@@ -865,20 +873,20 @@ def prime_count(n: int) -> int:
 
     sqrtn = isqrt(n)
     ndsqrtn = n // sqrtn
-    primes = primes_list(sqrtn+1)
+    primes = primes_list(sqrtn + 1)
 
-    small = [0] + [x - 1 for x in range(1, sqrtn+1)]
-    big = [0] + [n // d - 1 for d in range(1, ndsqrtn+1)]
+    small = [0] + [x - 1 for x in range(1, sqrtn + 1)]
+    big = [0] + [n // d - 1 for d in range(1, ndsqrtn + 1)]
 
     for p in primes:
-        k = small[p-1]
-        for d in range(1, ndsqrtn//p+1):
-            big[d] -= big[d*p] - k
-        for d in range(ndsqrtn//p+1, min(ndsqrtn, n//(p*p))+1):
+        k = small[p - 1]
+        for d in range(1, ndsqrtn // p + 1):
+            big[d] -= big[d * p] - k
+        for d in range(ndsqrtn // p + 1, min(ndsqrtn, n // (p * p)) + 1):
             x = n // d
-            big[d] -= small[x//p] - k
-        for x in range(sqrtn, p*p-1, -1):
-            small[x] -= small[x//p] - k
+            big[d] -= small[x // p] - k
+        for x in range(sqrtn, p * p - 1, -1):
+            small[x] -= small[x // p] - k
 
     return big[1]
 
@@ -891,20 +899,20 @@ def prime_sum(n: int) -> int:
 
     sqrtn = isqrt(n)
     ndsqrtn = n // sqrtn
-    primes = primes_list(sqrtn+1)
+    primes = primes_list(sqrtn + 1)
 
-    small = [0] + [(x+1)*(x+2)//2 - 1 for x in range(sqrtn+1)]
-    big = [0] + [(n//d)*(n//d+1)//2 - 1 for d in range(1, ndsqrtn+1)]
+    small = [0] + [(x + 1) * (x + 2) // 2 - 1 for x in range(sqrtn + 1)]
+    big = [0] + [(n // d) * (n // d + 1) // 2 - 1 for d in range(1, ndsqrtn + 1)]
 
     for p in primes:
-        k = small[p-1]
-        for d in range(1, ndsqrtn//p+1):
-            big[d] -= p * (big[d*p] - k)
-        for d in range(ndsqrtn//p+1, min(ndsqrtn, n//(p*p))+1):
+        k = small[p - 1]
+        for d in range(1, ndsqrtn // p + 1):
+            big[d] -= p * (big[d * p] - k)
+        for d in range(ndsqrtn // p + 1, min(ndsqrtn, n // (p * p)) + 1):
             x = n // d
-            big[d] -= p * (small[x//p] - k)
-        for x in range(sqrtn, p*p-1, -1):
-            small[x] -= p * (small[x//p] - k)
+            big[d] -= p * (small[x // p] - k)
+        for x in range(sqrtn, p * p - 1, -1):
+            small[x] -= p * (small[x // p] - k)
 
     return big[1]
 
@@ -917,123 +925,121 @@ def totient_sum(n: int) -> int:
     sqrtn = isqrt(n)
     ndsqrtn = n // sqrtn
 
-    small = [0] * (sqrtn+1)
-    big = [0] * (ndsqrtn+1)
+    small = [0] * (sqrtn + 1)
+    big = [0] * (ndsqrtn + 1)
 
-    for x in range(1, sqrtn+1):
+    for x in range(1, sqrtn + 1):
         sqrtx = isqrt(x)
-        ans = x * (x+1) // 2
-        for i in range(2, sqrtx+1):
-            ans -= small[x//i]
-        for i in range(1, min(sqrtx+1, x//sqrtx)):
-            ans -= small[i] * (x//i - x//(i+1))
+        ans = x * (x + 1) // 2
+        for i in range(2, sqrtx + 1):
+            ans -= small[x // i]
+        for i in range(1, min(sqrtx + 1, x // sqrtx)):
+            ans -= small[i] * (x // i - x // (i + 1))
         small[x] = ans
 
     for d in range(ndsqrtn, 0, -1):
         x = n // d
         sqrtx = isqrt(x)
-        ans = x * (x+1) // 2
-        for i in range(2, min(sqrtx, ndsqrtn//d)+1):
-            ans -= big[d*i]
-        for i in range(ndsqrtn//d+1, sqrtx+1):
-            ans -= small[x//i]
-        for i in range(1, min(sqrtx+1, x//sqrtx)):
-            ans -= small[i] * (x//i - x//(i+1))
+        ans = x * (x + 1) // 2
+        for i in range(2, min(sqrtx, ndsqrtn // d) + 1):
+            ans -= big[d * i]
+        for i in range(ndsqrtn // d + 1, sqrtx + 1):
+            ans -= small[x // i]
+        for i in range(1, min(sqrtx + 1, x // sqrtx)):
+            ans -= small[i] * (x // i - x // (i + 1))
         big[d] = ans
 
     return big[1]
 
 
-def pythagorean_triples(bound: int,
-                        bound_perim: bool = False,
-                        primitive: bool = False):
+def pythagorean_triples(bound: int, bound_perim: bool = False, primitive: bool = False):
     """Generate Pythagorean triples up to the specified (inclusive) bound."""
 
     if bound_perim:
-        for n in range(1, isqrt(bound//4)+1):
+        for n in range(1, isqrt(bound // 4) + 1):
             # if n is odd, m should be even, and vice versa
-            for m in range(n+1, (isqrt(n*n+2*bound)-n)//2+1, 2):
+            for m in range(n + 1, (isqrt(n * n + 2 * bound) - n) // 2 + 1, 2):
                 if gcd(m, n) == 1:
-                    a = m*m - n*n
-                    b = 2*m*n
-                    c = m*m + n*n
+                    a = m * m - n * n
+                    b = 2 * m * n
+                    c = m * m + n * n
                     if primitive:
                         yield a, b, c
                     else:
-                        for k in range(1, bound//(a+b+c)+1):
-                            yield k*a, k*b, k*c
+                        for k in range(1, bound // (a + b + c) + 1):
+                            yield k * a, k * b, k * c
 
     else:
-        for n in range(1, isqrt(bound//2)+1):
+        for n in range(1, isqrt(bound // 2) + 1):
             # if n is odd, m should be even, and vice versa
-            for m in range(n+1, isqrt(bound-n*n)+1, 2):
+            for m in range(n + 1, isqrt(bound - n * n) + 1, 2):
                 if gcd(m, n) == 1:
-                    a = m*m - n*n
-                    b = 2*m*n
-                    c = m*m + n*n
+                    a = m * m - n * n
+                    b = 2 * m * n
+                    c = m * m + n * n
                     if primitive:
                         yield a, b, c
                     else:
-                        for k in range(1, bound//c+1):
-                            yield k*a, k*b, k*c
+                        for k in range(1, bound // c + 1):
+                            yield k * a, k * b, k * c
 
 
-def eisenstein120_triples(bound: int,
-                          bound_perim: bool = False,
-                          primitive: bool = False):
+def eisenstein120_triples(
+    bound: int, bound_perim: bool = False, primitive: bool = False
+):
     """Generate Eisentein triples with a 120 degree angle up to the specified
-     (inclusive) bound. See: http://www.geocities.ws/fredlb37/node9.html"""
+    (inclusive) bound. See: http://www.geocities.ws/fredlb37/node9.html"""
 
     if bound_perim:
-        for n in range(1, isqrt(bound//6)+1):
-            for m in range(n+1, (isqrt(n*n+8*bound)-3*n)//4+1):
-                if (m-n) % 3 != 0 and gcd(m, n) == 1:
-                    a = m*m - n*n
-                    b = 2*m*n + n*n
-                    c = m*m + n*n + m*n
+        for n in range(1, isqrt(bound // 6) + 1):
+            for m in range(n + 1, (isqrt(n * n + 8 * bound) - 3 * n) // 4 + 1):
+                if (m - n) % 3 != 0 and gcd(m, n) == 1:
+                    a = m * m - n * n
+                    b = 2 * m * n + n * n
+                    c = m * m + n * n + m * n
                     if primitive:
                         yield a, b, c
                     else:
-                        for k in range(1, bound//(a+b+c)+1):
-                            yield k*a, k*b, k*c
+                        for k in range(1, bound // (a + b + c) + 1):
+                            yield k * a, k * b, k * c
 
     else:
-        for n in range(1, isqrt(bound//3)+1):
-            for m in range(n+1, (isqrt(4*bound-3*n*n)-n)//2+1):
-                if (m-n) % 3 != 0 and gcd(m, n) == 1:
-                    a = m*m - n*n
-                    b = 2*m*n + n*n
-                    c = m*m + n*n + m*n
+        for n in range(1, isqrt(bound // 3) + 1):
+            for m in range(n + 1, (isqrt(4 * bound - 3 * n * n) - n) // 2 + 1):
+                if (m - n) % 3 != 0 and gcd(m, n) == 1:
+                    a = m * m - n * n
+                    b = 2 * m * n + n * n
+                    c = m * m + n * n + m * n
                     if primitive:
                         yield a, b, c
                     else:
-                        for k in range(1, bound//c+1):
-                            yield k*a, k*b, k*c
+                        for k in range(1, bound // c + 1):
+                            yield k * a, k * b, k * c
 
 
-def eisenstein60_triples(bound: int,
-                         bound_perim: bool = False,
-                         primitive: bool = False):
+def eisenstein60_triples(
+    bound: int, bound_perim: bool = False, primitive: bool = False
+):
     """Generate Eisentein triples with a 60 degree angle up to the specified
-     (inclusive) bound. See: http://www.geocities.ws/fredlb37/node9.html"""
+    (inclusive) bound. See: http://www.geocities.ws/fredlb37/node9.html"""
 
     if bound_perim:
         if primitive:
             yield 1, 1, 1
         else:
-            for k in range(1, bound//3+1):
+            for k in range(1, bound // 3 + 1):
                 yield k, k, k
         for a, b, c in eisenstein120_triples(bound, True, primitive):
-            if a + 2*b + c <= bound:
+            if a + 2 * b + c <= bound:
                 yield a + b, b, c
-            if 2*a + b + c <= bound:
+            if 2 * a + b + c <= bound:
                 yield a, a + b, c
 
     else:
         if primitive:
             yield 1, 1, 1
         else:
-            for k in range(1, bound+1):
+            for k in range(1, bound + 1):
                 yield k, k, k
         for a, b, c in eisenstein120_triples(bound, False, primitive):
             yield a + b, b, c

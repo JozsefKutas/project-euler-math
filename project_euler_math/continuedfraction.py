@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from math import prod, gcd, isqrt
 from itertools import chain, cycle
+from math import prod, gcd, isqrt
 from typing import Optional, Sequence, Tuple, Iterator, List
 
 from project_euler_math.ntheory import factorisation
@@ -16,7 +16,7 @@ class ContinuedFraction:
     _initial: List[int]
     _repeating: List[int]
 
-    __slots__ = ('_initial', '_repeating')
+    __slots__ = ("_initial", "_repeating")
 
     @property
     def initial(self) -> List[int]:
@@ -30,9 +30,10 @@ class ContinuedFraction:
         return self._repeating
 
     def __init__(
-            self,
-            initial: ContinuedFraction | Sequence[int],
-            repeating: Optional[Sequence[int]] = None):
+        self,
+        initial: ContinuedFraction | Sequence[int],
+        repeating: Optional[Sequence[int]] = None,
+    ) -> None:
 
         if isinstance(initial, ContinuedFraction):
             if repeating is None:
@@ -59,7 +60,7 @@ class ContinuedFraction:
         if d != 0:
             fact = factorisation(d)
             d = prod(pr for pr, e in fact.items() if e % 2 == 1)
-            k = prod(pr**(e//2) for pr, e in fact.items())
+            k = prod(pr ** (e // 2) for pr, e in fact.items())
         else:
             d = 1
             k = 0
@@ -86,14 +87,14 @@ class ContinuedFraction:
             # compute complete quotients until the sequence repeats
             while complete_quotient not in complete_quotients:
                 complete_quotients[complete_quotient] = i
-                partial_quotient = (p + isqrt(k*k*d)) // q
+                partial_quotient = (p + isqrt(k * k * d)) // q
                 partial_quotients.append(partial_quotient)
 
                 # compute next triple
-                rem = p - partial_quotient*q
-                new_p = q*rem
-                new_k = -q*k
-                new_q = rem*rem - k*k*d
+                rem = p - partial_quotient * q
+                new_p = q * rem
+                new_k = -q * k
+                new_q = rem * rem - k * k * d
 
                 # remove common factors and make sure p is positive
                 common_div = gcd(new_p, gcd(new_k, new_q))
@@ -107,7 +108,8 @@ class ContinuedFraction:
 
             index = complete_quotients[complete_quotient]
             self = ContinuedFraction(
-                partial_quotients[:index], partial_quotients[index:])
+                partial_quotients[:index], partial_quotients[index:]
+            )
 
         return cls(self)
 
@@ -124,25 +126,26 @@ class ContinuedFraction:
         yield p, q
 
         for a in partial_quotients:
-            p, p_old = a*p + p_old, p
-            q, q_old = a*q + q_old, q
+            p, p_old = a * p + p_old, p
+            q, q_old = a * q + q_old, q
             yield p, q
 
     def __eq__(self, other):
         if isinstance(other, ContinuedFraction):
-            return ((self._initial, self._repeating)
-                    == (other._initial, other._repeating))
+            return (self._initial, self._repeating) == (
+                other._initial,
+                other._repeating,
+            )
         return NotImplemented
 
     def __hash__(self):
         return hash((self._initial, self._repeating))
 
     def __repr__(self) -> str:
-        return (type(self).__name__
-                + f'({self._initial!r},{self.repeating!r})')
+        return type(self).__name__ + f"({self._initial!r},{self.repeating!r})"
 
     def __str__(self) -> str:
         lis = [repr(x) for x in self.initial]
         if self.repeating:
-            lis.append('(' + ', '.join(map(repr, self.repeating)) + ')')
-        return '[' + ', '.join(lis) + ']'
+            lis.append("(" + ", ".join(map(repr, self.repeating)) + ")")
+        return "[" + ", ".join(lis) + "]"

@@ -17,7 +17,7 @@ class Eisenstein(Complex):
     _x: Integral
     _y: Integral
 
-    __slots__ = ('_x', '_y')
+    __slots__ = ("_x", "_y")
 
     @property
     def x(self) -> Integral:
@@ -29,17 +29,15 @@ class Eisenstein(Complex):
 
     @property
     def real(self) -> Real:
-        return self.x - self.y/2
+        return self.x - self.y / 2
 
     @property
     def imag(self) -> Real:
-        return self.y*_SQRT3/2
+        return self.y * _SQRT3 / 2
 
     def __init__(
-            self,
-            x: Integral | Eisenstein = 0,
-            y: Integral | Eisenstein = 0):
-
+        self, x: Integral | Eisenstein = 0, y: Integral | Eisenstein = 0
+    ) -> None:
         self._x = 0
         self._y = 0
 
@@ -49,7 +47,7 @@ class Eisenstein(Complex):
             self._x += x.x
             self._y += x.y
         else:
-            raise ValueError(f'x is not Integral or Eisenstein: {x}')
+            raise ValueError(f"x is not Integral or Eisenstein: {x}")
 
         if isinstance(y, Integral):
             self._y += y
@@ -57,7 +55,7 @@ class Eisenstein(Complex):
             self._x -= y.y
             self._y += y.x - y.y
         else:
-            raise ValueError(f'y is not Integral or Eisenstein: {y}')
+            raise ValueError(f"y is not Integral or Eisenstein: {y}")
 
     def __eq__(self, other) -> bool:
         if isinstance(other, Integral):
@@ -127,13 +125,12 @@ class Eisenstein(Complex):
             x = x1 * x2 + y1 * y2 - x1 * y2
             y = -x1 * y2 + y1 * x2
             d = other.norm()
-            roundup = (d-1) // 2
+            roundup = (d - 1) // 2
             return Eisenstein((x + roundup) // d, (y + roundup) // d)
 
         elif isinstance(other, Integral):
             roundup = (other - 1) // 2
-            return Eisenstein(
-                (self.x + roundup) // other, (self.y + roundup) // other)
+            return Eisenstein((self.x + roundup) // other, (self.y + roundup) // other)
 
         else:
             return NotImplemented
@@ -145,8 +142,7 @@ class Eisenstein(Complex):
         else:
             return self - div * other
 
-    def __divmod__(self, other: Integral | Eisenstein)\
-            -> Tuple[Eisenstein, Eisenstein]:
+    def __divmod__(self, other: Integral | Eisenstein) -> Tuple[Eisenstein, Eisenstein]:
         div = self.__floordiv__(other)
         if div is NotImplemented:
             return NotImplemented
@@ -241,14 +237,14 @@ class Eisenstein(Complex):
         return abs(complex(self))
 
     def __complex__(self) -> complex:
-        return complex(self.x - self.y/2, self.y*_SQRT3/2)
+        return complex(self.x - self.y / 2, self.y * _SQRT3 / 2)
 
     def __repr__(self) -> str:
         if self.x == 0:
-            return f'{self.y}w'
+            return f"{self.y}w"
         # noinspection PyTypeChecker
-        sep = '+' if self.y >= 0 else ''
-        return f'({self.x}{sep}{self.y}w)'
+        sep = "+" if self.y >= 0 else ""
+        return f"({self.x}{sep}{self.y}w)"
 
 
 W = Eisenstein(0, 1)

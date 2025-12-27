@@ -1,8 +1,8 @@
 from __future__ import annotations
 
+from functools import reduce
 from math import inf
 from numbers import Integral
-from functools import reduce
 from typing import List, TypeVar, Generic, Iterable, Tuple, Callable, Optional
 
 T = TypeVar('T')
