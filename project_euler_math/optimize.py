@@ -11,7 +11,7 @@ def nelder_mead(
     args: tuple = (),
     ftol: float = 1e-12,
     maxiter: int = 1000,
-) -> None:
+) -> Vector:
     """Searches for the minimum value of `f` using the Nelder-Mead algorithm."""
 
     reflect_factor = -1.0

@@ -4,7 +4,6 @@ import re
 from collections import namedtuple
 from decimal import Decimal
 from fractions import Fraction
-from typing import Literal
 
 RepeatingDecimalTuple = namedtuple(
     "RepeatingDecimalTuple", "sign initial exponent repetend"
@@ -17,7 +16,7 @@ class RepeatingDecimal:
     _exponent: int
     _initial: str
     _repetend: str | None
-    _sign: Literal[0, 1]
+    _sign: int
 
     __slots__ = ("_exponent", "_initial", "_repetend", "_sign")
 
@@ -30,7 +29,7 @@ class RepeatingDecimal:
         return self._initial
 
     @property
-    def repetend(self) -> str:
+    def repetend(self) -> str | None:
         return self._repetend
 
     @property
@@ -49,7 +48,7 @@ class RepeatingDecimal:
             self._exponent = -len(fracpart)
             self._initial = (intpart + fracpart).lstrip("0")
             self._repetend = repetend
-            self._sign = 1 if m.group("sign") == "-" else 0  # noqa
+            self._sign = 1 if m.group("sign") == "-" else 0
 
         elif isinstance(value, RepeatingDecimal):
             self._exponent = value._exponent
@@ -68,7 +67,7 @@ class RepeatingDecimal:
             self._exponent = tup.exponent
             self._initial = "".join(map(str, tup.digits))
             self._repetend = None
-            self._sign = tup.sign  # noqa
+            self._sign = tup.sign
 
         elif isinstance(value, (list, tuple)):
             if len(value) != 4:

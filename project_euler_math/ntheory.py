@@ -1,9 +1,7 @@
-import typing
 from collections import Counter
 from fractions import Fraction
 from itertools import compress, count, accumulate
 from math import prod, inf, isqrt, gcd as mathgcd, lcm as mathlcm
-from numbers import Integral
 from random import Random
 from typing import Sequence, Mapping, Iterator, Callable, TypeVar
 
@@ -14,7 +12,7 @@ from project_euler_math.polynomial import Polynomial
 PRIME_FACTORS_END = 10000
 
 
-E = TypeVar("E", Integral, Gaussian, Eisenstein, Polynomial)
+E = TypeVar("E")
 
 
 def inrt(n: int, k: int) -> int:
@@ -266,7 +264,7 @@ def is_prime(n: int, prime_factors: Sequence[int] | None = None) -> bool:
     raise ValueError(f"n out of range: {n}")
 
 
-def miller_rabin(n: int, bases: Sequence[int] = None) -> bool:
+def miller_rabin(n: int, bases: Sequence[int]) -> bool:
     """Performs the Miller-Rabin primality test on `n` using the specified
     bases."""
     s = 0
@@ -322,9 +320,9 @@ _wheel = [
 def factorisation(
     n: int,
     trial_div_limit: int = 10000,
-    pollard_rho_args: Mapping[int, int] | None = None,
+    pollard_rho_args: Mapping | None = None,
     prime_factors: Sequence[int] | None = None,
-) -> typing.Counter[int]:
+) -> Counter[int]:
     """Return the prime factorisation of `n`. First tries trial division using
     the wheel factorisation approach up to the specified limit, then uses
     Pollard's rho heuristic for larger factors."""
@@ -405,7 +403,9 @@ def factorisation(
     return ans
 
 
-def pollard_rho(n: int, a=1, seed=42, k=1, f: Callable[[int], int] = None) -> int:
+def pollard_rho(
+    n: int, a=1, seed=42, k=1, f: Callable[[int], int] | None = None
+) -> int:
     """Find a proper factor of `n` using Pollard's rho heuristic. Floyd's
     tortoise and hare algorithm is used to detect cycles."""
 
@@ -507,7 +507,7 @@ def mobius(n: int, fact: Mapping[int, int] | None = None) -> int:
     if n == 1:
         return 1
     fact = fact or factorisation(n)
-    return 0 if fact.most_common(1)[0][1] > 1 else (-1) ** len(fact)
+    return 0 if max(fact.values()) > 1 else (-1) ** len(fact)
 
 
 def rad(n: int, fact: Mapping[int, int] | None = None) -> int:

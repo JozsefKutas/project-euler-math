@@ -8,7 +8,7 @@ def newton_raphson(
     args: tuple = (),
     tol: float = 1e-8,
     maxiter: int = 50,
-):
+) -> float:
     """Searches for the root of `f` using the Newton-Raphson algorithm."""
 
     for _ in range(maxiter):
@@ -33,7 +33,7 @@ def secant(
     args: tuple = (),
     tol: float = 1e-8,
     maxiter: int = 50,
-):
+) -> float:
     """Searches for the root of `f` using the secant algorithm."""
 
     if x1 is None:
@@ -63,7 +63,7 @@ def bisect(
     args: tuple = (),
     tol: float = 1e-8,
     maxiter: int = 100,
-):
+) -> float:
     """Searches for the root of `f` using bisection search."""
 
     fa = f(a, *args)

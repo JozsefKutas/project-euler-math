@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from numbers import Integral
 from operator import add, sub, mul, neg, pos
 from typing import TypeVar, Generic, Callable
 
@@ -74,8 +73,8 @@ class Mod(Generic[T]):
         else:
             return Mod(self._n % gcd(other, self.mod), self.mod)
 
-    def __pow__(self, power: Integral, modulo: T | None = None) -> Mod[T]:
-        if isinstance(power, Integral):
+    def __pow__(self, power: int, modulo: T | None = None) -> Mod[T]:
+        if isinstance(power, int):
             if power < 0:
                 return self.invert() ** (-power)
             if modulo:

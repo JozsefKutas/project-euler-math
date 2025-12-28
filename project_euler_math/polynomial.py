@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from functools import reduce
 from math import inf
-from numbers import Integral
 from typing import TypeVar, Generic, Iterable, Callable
 
 T = TypeVar("T")
@@ -58,14 +57,16 @@ class Polynomial(Generic[T]):
             return self._coeffs[0] == other
         elif self.degree < 0:
             return 0 == other
+        else:
+            return False
 
     def __bool__(self) -> bool:
         return bool(self._coeffs)
 
-    def __getitem__(self, key: _PolynomialKey) -> T | Polynomial[T]:
+    def __getitem__(self, key: _PolynomialKey) -> T | list[T]:
         return self._coeffs[key]
 
-    def __setitem__(self, key: _PolynomialKey, value: T | Polynomial[T]) -> None:
+    def __setitem__(self, key: _PolynomialKey, value: T | list[T]) -> None:
         self._coeffs[key] = value
 
     def __add__(self, other: T | Polynomial[T]) -> Polynomial[T]:
@@ -141,8 +142,8 @@ class Polynomial(Generic[T]):
         else:
             return NotImplemented
 
-    def __pow__(self, power: Integral) -> Polynomial[T]:
-        if isinstance(power, Integral):
+    def __pow__(self, power: int) -> Polynomial[T]:
+        if isinstance(power, int):
             if power < 0:
                 raise ValueError("power must be non-negative")
 
@@ -185,9 +186,9 @@ class Polynomial(Generic[T]):
         return self._create([+a for a in self._coeffs])
 
     def map(self, f: Callable[[T], R]) -> Polynomial[R]:
-        return self._create([f(a) for a in self])
+        return self._create([f(a) for a in self._coeffs])
 
-    def __call__(self, x: T) -> T:
+    def __call__(self, x: T) -> int | T:
         return reduce(lambda a, b: a * x + b, reversed(self._coeffs), 0)
 
     def deriv(self) -> Polynomial[T]:

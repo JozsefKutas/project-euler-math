@@ -30,18 +30,18 @@ class NumeralSystem:
         return self._chunksize
 
     def __init__(
-        self, symbols: str = None, base: int = None, chunksize: int = 1
+        self, symbols: str | None = None, base: int | None = None, chunksize: int = 1
     ) -> None:
 
         if symbols is None and base is None:
             raise ValueError
 
-        if symbols is not None:
+        if base is None:
             if not isinstance(symbols, str):
                 raise ValueError
             base = len(symbols)
 
-        elif base is not None:
+        elif symbols is None:
             if not isinstance(base, int) or base > len(ALPHABET):
                 raise ValueError
             symbols = ALPHABET[:base]

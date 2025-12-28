@@ -3,7 +3,6 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from itertools import product
 from math import prod
-from numbers import Integral
 from operator import (
     lt,
     le,
@@ -58,7 +57,7 @@ class BaseVector(ABC, Generic[T]):
 
     @classmethod
     @abstractmethod
-    def from_function(cls, f: Callable[[int], T], n: int) -> BaseVector[T]:
+    def from_function(cls, f: Callable[[int], R], n: int) -> BaseVector[R]:
         raise NotImplementedError
 
     @classmethod
@@ -70,7 +69,7 @@ class BaseVector(ABC, Generic[T]):
         return cls.full(n, 1)
 
     @classmethod
-    def full(cls, n: int, x: T) -> BaseVector[T]:
+    def full(cls, n: int, x: R) -> BaseVector[R]:
         return cls.from_function(lambda i: x, n)
 
     @classmethod
@@ -386,8 +385,8 @@ class BaseMatrix(ABC, Generic[T]):
     @classmethod
     @abstractmethod
     def from_function(
-        cls, function: Callable[[int, int], T], shape: tuple[int, int]
-    ) -> BaseMatrix[T]:
+        cls, function: Callable[[int, int], R], shape: tuple[int, int]
+    ) -> BaseMatrix[R]:
         raise NotImplementedError
 
     @classmethod
@@ -399,7 +398,7 @@ class BaseMatrix(ABC, Generic[T]):
         return cls.full(shape, 1)
 
     @classmethod
-    def full(cls, shape: tuple[int, int], x: T) -> BaseMatrix[T]:
+    def full(cls, shape: tuple[int, int], x: R) -> BaseMatrix[R]:
         return cls.from_function(lambda i, j: x, shape)
 
     @classmethod
@@ -594,8 +593,8 @@ class BaseMatrix(ABC, Generic[T]):
     def __matmul__(self, other: BaseMatrix[T]) -> BaseMatrix[T]:
         raise NotImplementedError
 
-    def matrix_power(self, power: Integral) -> BaseMatrix[T]:
-        if isinstance(power, Integral):
+    def matrix_power(self, power: int) -> BaseMatrix[T]:
+        if isinstance(power, int):
             if power < 0:
                 raise ValueError("power must be non-negative")
 
@@ -987,9 +986,7 @@ class LUDecomposition(Generic[T]):
         return self.l @ self.u
 
     def solve(self, b: BaseVector[T] | BaseMatrix[T]) -> BaseVector[T] | BaseMatrix[T]:
-
         lu = self._lu
-
         x = b.copy()
 
         if isinstance(x, BaseVector):
@@ -1008,6 +1005,9 @@ class LUDecomposition(Generic[T]):
             for j in range(x.ncols):
                 x[:, j] = self._solve(x[:, j])
             return x
+
+        else:
+            raise TypeError
 
     def _solve(self, b):
         lu = self._lu

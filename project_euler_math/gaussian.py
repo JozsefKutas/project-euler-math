@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from numbers import Integral, Complex
+from numbers import Complex
 
 
 class Gaussian(Complex):
@@ -9,50 +9,50 @@ class Gaussian(Complex):
     ``a + bi`` where ``a`` and ``b`` are integers.
     """
 
-    _x: Integral
-    _y: Integral
+    _x: int
+    _y: int
 
     __slots__ = ("_x", "_y")
 
     @property
-    def x(self) -> Integral:
+    def x(self) -> int:
         return self._x
 
     @property
-    def y(self) -> Integral:
+    def y(self) -> int:
         return self._y
 
     @property
-    def real(self) -> Integral:
+    def real(self) -> int:
         return self._x
 
     @property
-    def imag(self) -> Integral:
+    def imag(self) -> int:
         return self._y
 
-    def __init__(self, x: Integral | Gaussian = 0, y: Integral | Gaussian = 0) -> None:
+    def __init__(self, x: int | Gaussian = 0, y: int | Gaussian = 0) -> None:
 
         self._x = 0
         self._y = 0
 
-        if isinstance(x, Integral):
+        if isinstance(x, int):
             self._x += x
         elif isinstance(x, Gaussian):
             self._x += x.x
             self._y += x.y
         else:
-            raise ValueError(f"x is not Integral or Gaussian: {x}")
+            raise ValueError(f"x is not int or Gaussian: {x}")
 
-        if isinstance(y, Integral):
+        if isinstance(y, int):
             self._y += y
         elif isinstance(y, Gaussian):
             self._x -= y.y
             self._y += y.x
         else:
-            raise ValueError(f"y is not Integral or Gaussian: {y}")
+            raise ValueError(f"y is not int or Gaussian: {y}")
 
     def __eq__(self, other) -> bool:
-        if isinstance(other, Integral):
+        if isinstance(other, int):
             return (self.x, self.y) == (other, 0)
         elif isinstance(other, Gaussian):
             return (self.x, self.y) == (other.x, other.y)
@@ -68,49 +68,49 @@ class Gaussian(Complex):
         # noinspection PyTypeChecker
         return Gaussian(self.x, -self.y)
 
-    def norm(self) -> Integral:
+    def norm(self) -> int:
         return self.x * self.x + self.y * self.y
 
-    def __add__(self, other: Integral | Gaussian) -> Gaussian:
+    def __add__(self, other: int | Gaussian) -> Gaussian:
         if isinstance(other, Gaussian):
             return Gaussian(self.x + other.x, self.y + other.y)
-        elif isinstance(other, Integral):
+        elif isinstance(other, int):
             # noinspection PyTypeChecker
             return Gaussian(self.x + other, self.y)
         else:
             return NotImplemented
 
-    def __sub__(self, other: Integral | Gaussian) -> Gaussian:
+    def __sub__(self, other: int | Gaussian) -> Gaussian:
         if isinstance(other, Gaussian):
             return Gaussian(self.x - other.x, self.y - other.y)
-        elif isinstance(other, Integral):
+        elif isinstance(other, int):
             # noinspection PyTypeChecker
             return Gaussian(self.x - other, self.y)
         else:
             return NotImplemented
 
-    def __mul__(self, other: Integral | Gaussian) -> Gaussian:
+    def __mul__(self, other: int | Gaussian) -> Gaussian:
         if isinstance(other, Gaussian):
             x1 = self.x
             y1 = self.y
             x2 = other.x
             y2 = other.y
             return Gaussian(x1 * x2 - y1 * y2, x1 * y2 + y1 * x2)
-        elif isinstance(other, Integral):
+        elif isinstance(other, int):
             return Gaussian(self.x * other, self.y * other)
         else:
             return NotImplemented
 
-    def __truediv__(self, other: Complex) -> Complex:
-        if isinstance(other, Complex):
+    def __truediv__(self, other: complex) -> complex:
+        if isinstance(other, complex):
             return complex(self) / other
         else:
             return NotImplemented
 
-    def __div__(self, other: Complex) -> Complex:
+    def __div__(self, other: complex) -> complex:
         return self.__truediv__(other)
 
-    def __floordiv__(self, other: Integral | Gaussian) -> Gaussian:
+    def __floordiv__(self, other: int | Gaussian) -> Gaussian:
         if isinstance(other, Gaussian):
             x1 = self.x
             y1 = self.y
@@ -122,29 +122,29 @@ class Gaussian(Complex):
             roundup = (d - 1) // 2
             return Gaussian((x + roundup) // d, (y + roundup) // d)
 
-        if isinstance(other, Integral):
+        if isinstance(other, int):
             roundup = (other - 1) // 2
             return Gaussian((self.x + roundup) // other, (self.y + roundup) // other)
 
         else:
             return NotImplemented
 
-    def __mod__(self, other: Integral | Gaussian) -> Gaussian:
+    def __mod__(self, other: int | Gaussian) -> Gaussian:
         div = self.__floordiv__(other)
         if div is NotImplemented:
             return NotImplemented
         else:
             return self - div * other
 
-    def __divmod__(self, other: Integral | Gaussian) -> tuple[Gaussian, Gaussian]:
+    def __divmod__(self, other: int | Gaussian) -> tuple[Gaussian, Gaussian]:
         div = self.__floordiv__(other)
         if div is NotImplemented:
             return NotImplemented
         else:
             return div, self - div * other
 
-    def __pow__(self, power: Integral) -> Gaussian:
-        if isinstance(power, Integral):
+    def __pow__(self, power: int) -> Gaussian:
+        if isinstance(power, int):
             if power < 0:
                 raise ValueError("power must be non-negative")
 
@@ -160,63 +160,63 @@ class Gaussian(Complex):
         else:
             return NotImplemented
 
-    def __radd__(self, other: Integral | Complex) -> Gaussian | complex:
-        if isinstance(other, Integral):
+    def __radd__(self, other: int | complex) -> Gaussian | complex:
+        if isinstance(other, int):
             # noinspection PyTypeChecker
             return Gaussian(other + self.x, self.y)
-        elif isinstance(other, Complex):
+        elif isinstance(other, complex):
             return complex(other) + complex(self)
         else:
             return NotImplemented
 
-    def __rsub__(self, other: Integral | Complex) -> Gaussian | complex:
-        if isinstance(other, Integral):
+    def __rsub__(self, other: int | complex) -> Gaussian | complex:
+        if isinstance(other, int):
             return Gaussian(other - self.x, -self.y)
-        elif isinstance(other, Complex):
+        elif isinstance(other, complex):
             return complex(other) - complex(self)
         else:
             return NotImplemented
 
-    def __rmul__(self, other: Integral | Complex) -> Gaussian | complex:
-        if isinstance(other, Integral):
+    def __rmul__(self, other: int | complex) -> Gaussian | complex:
+        if isinstance(other, int):
             return Gaussian(other * self.x, other * self.y)
-        elif isinstance(other, Complex):
+        elif isinstance(other, complex):
             return complex(other) * complex(self)
         else:
             return NotImplemented
 
-    def __rtruediv__(self, other: Complex) -> complex:
-        if isinstance(other, Complex):
+    def __rtruediv__(self, other: complex) -> complex:
+        if isinstance(other, complex):
             return complex(other) / complex(self)
         else:
             return NotImplemented
 
-    def __rdiv__(self, other: Complex) -> complex:
+    def __rdiv__(self, other: complex) -> complex:
         return self.__rtruediv__(other)
 
-    def __rdivmod__(self, other: Integral) -> tuple[Gaussian, Gaussian]:
-        if isinstance(other, Integral):
+    def __rdivmod__(self, other: int) -> tuple[Gaussian, Gaussian]:
+        if isinstance(other, int):
             # noinspection PyTypeChecker
             return divmod(Gaussian(other), self)
         else:
             return NotImplemented
 
-    def __rfloordiv__(self, other: Integral) -> Gaussian:
-        if isinstance(other, Integral):
+    def __rfloordiv__(self, other: int) -> Gaussian:
+        if isinstance(other, int):
             # noinspection PyTypeChecker
             return Gaussian(other) // self
         else:
             return NotImplemented
 
-    def __rmod__(self, other: Integral) -> Gaussian:
-        if isinstance(other, Integral):
+    def __rmod__(self, other: int) -> Gaussian:
+        if isinstance(other, int):
             # noinspection PyTypeChecker
             return Gaussian(other) % self
         else:
             return NotImplemented
 
-    def __rpow__(self, base: Complex) -> complex:
-        if isinstance(base, Complex):
+    def __rpow__(self, base: complex) -> complex:
+        if isinstance(base, complex):
             return complex(base) ** complex(self)
         else:
             return NotImplemented
