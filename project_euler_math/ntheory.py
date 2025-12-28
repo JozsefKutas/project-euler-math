@@ -760,19 +760,23 @@ def _prepare_prime_factors(prime_factors, end):
         return prime_factor_list(end)
 
 
-def primality_iter(segment: int = 100_000) -> Iterator[int]:
+def primality_iter(end: int | None = None, segment: int = 100_000) -> Iterator[int]:
     """Return an iterator, the i-th element of which is True if i is prime, and
     False otherwise. Uses a segmented sieve algorithm with segment size equal to
     the `segment` parameter."""
-    primes = primes_list(segment)
+    if end is None:
+        end = segment * segment + 1
 
+    segment = min(segment, end)
+    primes = primes_list(segment)
     primality = [False] * segment
     for p in primes:
         primality[p] = True
     yield from primality
 
     n = segment
-    while n < segment**2:
+    while n < min(segment**2, end):
+        segment = min(segment, end - n)
         primality[:] = [True] * segment
         for p in primes:
             start_index = max(p * p - n, -n % p)
@@ -783,18 +787,21 @@ def primality_iter(segment: int = 100_000) -> Iterator[int]:
         yield from primality
         n += segment
 
+    if end - n > 0:
+        raise ValueError
 
-def primes_iter(segment: int = 100_000) -> Iterator[int]:
+
+def primes_iter(end: int | None = None, segment: int = 100_000) -> Iterator[int]:
     """Generate primes. Uses a segmented sieve algorithm with segment size equal
     to the `segment` parameter."""
-    yield from compress(count(0), primality_iter(segment))
+    yield from compress(count(0), primality_iter(end, segment))
 
 
-def prime_count_iter(segment: int = 100_000) -> Iterator[int]:
+def prime_count_iter(end: int | None = None, segment: int = 100_000) -> Iterator[int]:
     """Return an iterator, the i-th element of which is the number of primes
     less than or equal to i. Uses a segmented sieve algorithm with segment size
     equal to the `segment` parameter."""
-    yield from accumulate(map(int, primality_iter(segment)))
+    yield from accumulate(map(int, primality_iter(end, segment)))
 
 
 class PrimeSieve:
