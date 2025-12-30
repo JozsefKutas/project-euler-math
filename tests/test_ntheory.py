@@ -5,14 +5,42 @@ from math import gcd as mathgcd, lcm as mathlcm
 import pytest
 
 from project_euler_math.ntheory import (
-    inrt, is_square, gcd, lcm, bezout, mod_inverse,
-    crt2, crt2_noncoprime, farey_sequence, left_farey, right_farey,
-    jacobi, tonelli_shanks, is_prime, divisors, factorisation,
-    omega, omega_list, ndiv_list, ndiv, sigma, sigma_list,
-    totient, mobius, rad, sum_squares,
-    primes_list, primality_list,
-    totient_list, mobius_list, rad_list, sum_squares_list,
-    prime_count, prime_sum, totient_sum)
+    inrt,
+    is_square,
+    gcd,
+    lcm,
+    bezout,
+    mod_inverse,
+    crt2,
+    crt2_noncoprime,
+    farey_sequence,
+    left_farey,
+    right_farey,
+    jacobi,
+    tonelli_shanks,
+    is_prime,
+    divisors,
+    factorisation,
+    omega,
+    omega_list,
+    ndiv_list,
+    ndiv,
+    sigma,
+    sigma_list,
+    totient,
+    mobius,
+    rad,
+    sum_squares,
+    primes_list,
+    primality_list,
+    totient_list,
+    mobius_list,
+    rad_list,
+    sum_squares_list,
+    prime_count,
+    prime_sum,
+    totient_sum,
+)
 
 
 def test_inrt():
@@ -45,7 +73,7 @@ def test_lcm():
 def test_bezout():
     for m, n in product(range(100), repeat=2):
         d, s, t = bezout(m, n)
-        assert d == gcd(m, n) == s*m + t*n
+        assert d == gcd(m, n) == s * m + t * n
 
 
 def test_mod_inverse():
@@ -62,7 +90,7 @@ def test_crt2():
         if gcd(m, n) == 1:
             for a, b in product(range(m), range(n)):
                 x = crt2(a, b, m, n)
-                assert x < m*n and x % m == a and x % n == b
+                assert x < m * n and x % m == a and x % n == b
 
 
 def test_crt2_noncoprime():
@@ -71,7 +99,7 @@ def test_crt2_noncoprime():
         for a, b in product(range(m), range(n)):
             x = crt2_noncoprime(a, b, m, n)
             if (b - a) % d == 0:
-                assert x < m*n and x % m == a and x % n == b
+                assert x < m * n and x % m == a and x % n == b
             else:
                 assert x is None
 
@@ -80,21 +108,21 @@ def test_farey_left():
     n = 100
     seq = farey_sequence(n)
     for i in range(1, len(seq)):
-        assert left_farey(n, seq[i]) == seq[i-1]
+        assert left_farey(n, seq[i]) == seq[i - 1]
 
 
 def test_farey_right():
     n = 100
     seq = farey_sequence(n)
-    for i in range(len(seq)-1):
-        assert right_farey(n, seq[i]) == seq[i+1]
+    for i in range(len(seq) - 1):
+        assert right_farey(n, seq[i]) == seq[i + 1]
 
 
 def test_jacobi():
     primes = primes_list(100)[1:]
     for p in primes:
         is_quad_res = [False] * p
-        for i in range(1, (p-1)//2+1):
+        for i in range(1, (p - 1) // 2 + 1):
             is_quad_res[pow(i, 2, p)] = True
         assert jacobi(0, p) == 0
         for i in range(1, p):
@@ -105,7 +133,7 @@ def test_tonelli_shanks():
     primes = primes_list(100)[1:]
     for p in primes:
         for a in range(100):
-            b = tonelli_shanks(a*a, p)
+            b = tonelli_shanks(a * a, p)
             assert b == a % p or b == -a % p
 
 
@@ -127,8 +155,7 @@ def test_factorisation():
         factorisation(0)
     assert factorisation(1) == Counter()
     assert factorisation(101) == Counter({101: 1})
-    assert factorisation(2_310) == Counter(
-        {2: 1, 3: 1, 5: 1, 7: 1, 11: 1})
+    assert factorisation(2_310) == Counter({2: 1, 3: 1, 5: 1, 7: 1, 11: 1})
     assert factorisation(65_536) == Counter({2: 16})
     assert factorisation(1_000_000) == Counter({2: 6, 5: 6})
 

@@ -1,6 +1,7 @@
+from tests.utils import assert_iterable_almost_equal
+
 from project_euler_math.matrix import Vector, Matrix
 from project_euler_math.optimize import nelder_mead
-from tests.utils import assert_iterable_almost_equal
 
 
 def test_nelder_mead():

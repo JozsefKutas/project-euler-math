@@ -1,9 +1,9 @@
 from fractions import Fraction
 
 import pytest
+from tests.utils import assert_iterable_equal, assert_iterable_almost_equal
 
 from project_euler_math.matrix import Vector, Matrix, SingularMatrixError
-from tests.utils import assert_iterable_equal, assert_iterable_almost_equal
 
 
 def test_matmul():
@@ -31,10 +31,13 @@ def test_inv():
     assert_iterable_equal(Matrix.identity(3).inv(), Matrix.identity(3))
     with pytest.raises(SingularMatrixError):
         Matrix.ones((3, 3)).inv()
-    assert_iterable_equal(Matrix([[0, 1], [2, 3]]).map(Fraction).inv(),
-                          Matrix([[-Fraction(3, 2), Fraction(1, 2)], [1, 0]]))
-    assert_iterable_almost_equal(Matrix([[0, 1], [2, 3]]).inv(),
-                                 Matrix([[-1.5, 0.5], [1, 0]]))
+    assert_iterable_equal(
+        Matrix([[0, 1], [2, 3]]).map(Fraction).inv(),
+        Matrix([[-Fraction(3, 2), Fraction(1, 2)], [1, 0]]),
+    )
+    assert_iterable_almost_equal(
+        Matrix([[0, 1], [2, 3]]).inv(), Matrix([[-1.5, 0.5], [1, 0]])
+    )
 
 
 def test_det():

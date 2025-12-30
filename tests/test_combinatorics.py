@@ -1,7 +1,11 @@
 from itertools import islice
 
 from project_euler_math.combinatorics import (
-    bell_list, partition_list, fibonacci_numbers, kgon_numbers)
+    bell_list,
+    partition_list,
+    fibonacci_numbers,
+    kgon_numbers,
+)
 
 
 def test_bell_list():
