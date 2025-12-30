@@ -5,10 +5,6 @@ from math import prod, inf, isqrt, gcd as mathgcd, lcm as mathlcm
 from random import Random
 from typing import Sequence, Mapping, Iterator, Callable, TypeVar
 
-from project_euler_math.eisenstein import Eisenstein
-from project_euler_math.gaussian import Gaussian
-from project_euler_math.polynomial import Polynomial
-
 PRIME_FACTORS_END = 10000
 
 
