@@ -75,7 +75,7 @@ def lcm(m: E, n: E) -> E:
     return m * n // gcd(m, n)
 
 
-def bezout(m: E, n: E) -> Sequence[E]:
+def bezout(m: E, n: E) -> tuple[E, E, E]:
     """Return the tuple ``(d, s, t)``, where ``d`` is the non-negative highest
     common factor of integers `m` and `n`, and ``d = s*m + t*n``."""
     d_old, d = m, n
@@ -437,7 +437,7 @@ def divisors(n: int, fact: Mapping[int, int] | None = None) -> list[int]:
 
 def factorisations(
     n: int, fact: Mapping[int, int] | None = None
-) -> Iterator[Sequence[int]]:
+) -> Iterator[tuple[int, ...]]:
     """Return a list of all factorisations of `n`."""
     fact = fact or factorisation(n)
 
