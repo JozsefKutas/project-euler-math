@@ -40,6 +40,10 @@ from project_euler_math.ntheory import (
     prime_count,
     prime_sum,
     totient_sum,
+    primality_iter,
+    primes_iter,
+    prime_count_list,
+    prime_count_iter,
 )
 
 
@@ -180,7 +184,7 @@ def test_sigma():
 def test_primality_list():
     primality = primality_list(10_000)
     for i, is_prime_i in enumerate(primality):
-        assert is_prime(i) == is_prime_i
+        assert is_prime_i == is_prime(i)
 
 
 def test_primes_list():
@@ -188,47 +192,67 @@ def test_primes_list():
     assert primes_list(50) == primes
 
 
+def test_prime_count_list():
+    prime_counts = prime_count_list(10_000)
+    prev = 0
+    for i, pi in enumerate(prime_counts):
+        assert pi == prev + (1 if is_prime(i) else 0)
+        prev = pi
+
+
 def test_omega_list():
     omegas = omega_list(10_000)
     for i in range(1, 10_000):
-        assert omega(i) == omegas[i]
+        assert omegas[i] == omega(i)
 
 
 def test_ndiv_list():
     ndivs = ndiv_list(10_000)
     for i in range(1, 10_000):
-        assert ndiv(i) == ndivs[i]
+        assert ndivs[i] == ndiv(i)
 
 
 def test_sigma_list():
     for k in range(10):
         sigmas = sigma_list(10_000, k)
         for i in range(1, 10_000):
-            assert sigma(i, k) == sigmas[i]
+            assert sigmas[i] == sigma(i, k)
 
 
 def test_totient_list():
     totients = totient_list(10_000)
     for i in range(1, 10_000):
-        assert totient(i) == totients[i]
+        assert totients[i] == totient(i)
 
 
 def test_mobius_list():
     mobiuses = mobius_list(10_000)
     for i in range(1, 10_000):
-        assert mobius(i) == mobiuses[i]
+        assert mobiuses[i] == mobius(i)
 
 
 def test_rad_list():
     rads = rad_list(10_000)
     for i in range(1, 10_000):
-        assert rad(i) == rads[i]
+        assert rads[i] == rad(i)
 
 
 def test_sum_squares_list():
     sum_squares_lis = sum_squares_list(10_000)
     for i in range(1, 10_000):
-        assert sum_squares(i) == sum_squares_lis[i]
+        assert sum_squares_lis[i] == sum_squares(i)
+
+
+def test_primality_iter():
+    assert list(primality_iter(10_000, segment=100)) == primality_list(10_000)
+
+
+def test_primes_iter():
+    assert list(primes_iter(10_000, segment=100)) == primes_list(10_000)
+
+
+def test_prime_count_iter():
+    assert list(prime_count_iter(10_000, segment=100)) == prime_count_list(10_000)
 
 
 def test_prime_count():
