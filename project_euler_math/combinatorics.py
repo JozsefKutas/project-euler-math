@@ -61,6 +61,21 @@ def partition_list(end: int) -> list[int]:
     return partitions
 
 
+def partition_numbers() -> Iterator[int]:
+    """Generate partition numbers."""
+    partitions = [1]
+    yield 1
+
+    for i in count(1):
+        partitions.append(0)
+        for j, s in product(range(1, i + 1), (-1, 1)):
+            p = j * (3 * j + s) // 2
+            if p > i:
+                break
+            partitions[-1] += (-1) ** (j - 1) * partitions[i - p]
+        yield partitions[-1]
+
+
 def partition_sequence(n: int, seq: Sequence[int]) -> int:
     """Return the number of ways `n` can be partitioned (ignoring order)
     into partitions of sizes specified in `seq`."""
