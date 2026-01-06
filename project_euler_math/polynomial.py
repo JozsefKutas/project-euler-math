@@ -1,15 +1,12 @@
 from collections.abc import Iterable
 from functools import reduce
 from math import inf
-from typing import Callable, Generic, TypeVar
-
-T = TypeVar("T")
-R = TypeVar("R")
+from typing import Callable
 
 _PolynomialKey = int | slice
 
 
-class Polynomial(Generic[T]):
+class Polynomial[T]:
     """A polynomial in a single variable."""
 
     _coeffs: list[T]
@@ -184,7 +181,7 @@ class Polynomial(Generic[T]):
     def __pos__(self) -> Polynomial[T]:
         return self._create([+a for a in self._coeffs])
 
-    def map(self, f: Callable[[T], R]) -> Polynomial[R]:
+    def map[R](self, f: Callable[[T], R]) -> Polynomial[R]:
         return self._create([f(a) for a in self._coeffs])
 
     def __call__(self, x: T) -> int | T:

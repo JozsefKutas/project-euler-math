@@ -1,39 +1,37 @@
 from collections.abc import Iterable
 from itertools import chain, combinations, islice
-from typing import Callable, TypeVar
-
-T = TypeVar("T")
-K = TypeVar("K")
-V = TypeVar("V")
+from typing import Callable
 
 
-def chunks(iterable: Iterable[T], chunk_size: int) -> Iterable[list[T]]:
+def chunks[T](iterable: Iterable[T], chunk_size: int) -> Iterable[list[T]]:
     """Return an iterable split into chunks."""
     it = iter(iterable)
     for x in it:
         yield [x] + list(islice(it, chunk_size - 1))
 
 
-def interleave(*iterables: Iterable[T]) -> Iterable[T]:
+def interleave[T](*iterables: Iterable[T]) -> Iterable[T]:
     """Return an iterable split into chunks."""
     yield from chain.from_iterable(zip(*iterables))
 
 
-def rotations(iterable: Iterable[T]) -> Iterable[tuple[T, ...]]:
+def rotations[T](iterable: Iterable[T]) -> Iterable[tuple[T, ...]]:
     """Generate rotations of `sequence`."""
     tup = tuple(iterable)
     for i in range(len(tup)):
         yield tup[i:] + tup[:i]
 
 
-def powerset(iterable: Iterable[T], nonempty: bool = False) -> Iterable[tuple[T, ...]]:
+def powerset[T](
+    iterable: Iterable[T], nonempty: bool = False
+) -> Iterable[tuple[T, ...]]:
     """Return the powerset of a finite iterable."""
     tup = tuple(iterable)
     rng = range(1 if nonempty else 0, len(tup) + 1)
     return chain.from_iterable(combinations(tup, r) for r in rng)
 
 
-def groupby(
+def groupby[T, K, V](
     iterable: Iterable[T],
     key: Callable[[T], K],
     downstream: Callable[[list[T]], V] | None = None,

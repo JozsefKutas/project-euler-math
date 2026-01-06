@@ -24,10 +24,7 @@ from operator import (
     truediv,
     xor,
 )
-from typing import Callable, Generic, TypeVar
-
-T = TypeVar("T")
-R = TypeVar("R")
+from typing import Callable
 
 _VectorKey = int | slice
 _MatrixKey = tuple[int | slice, int | slice]
@@ -41,7 +38,7 @@ def _one(n):
     return n**0
 
 
-class BaseVector(ABC, Generic[T]):
+class BaseVector[T](ABC):
     """
     Vector base class. The data layout is unspecified.
     """
@@ -56,7 +53,7 @@ class BaseVector(ABC, Generic[T]):
 
     @classmethod
     @abstractmethod
-    def from_function(cls, f: Callable[[int], R], n: int) -> BaseVector[R]:
+    def from_function[R](cls, f: Callable[[int], R], n: int) -> BaseVector[R]:
         raise NotImplementedError
 
     @classmethod
@@ -68,7 +65,7 @@ class BaseVector(ABC, Generic[T]):
         return cls.full(n, 1)
 
     @classmethod
-    def full(cls, n: int, x: R) -> BaseVector[R]:
+    def full[R](cls, n: int, x: R) -> BaseVector[R]:
         return cls.from_function(lambda i: x, n)
 
     @classmethod
@@ -198,7 +195,7 @@ class BaseVector(ABC, Generic[T]):
         return self._right_op(other, or_)
 
     @abstractmethod
-    def map(self, f: Callable[[T], R]) -> BaseVector[R]:
+    def map[R](self, f: Callable[[T], R]) -> BaseVector[R]:
         raise NotImplementedError
 
     def __neg__(self) -> BaseVector[T]:
@@ -228,7 +225,7 @@ class BaseVector(ABC, Generic[T]):
         return type(self).__name__ + f"({self.as_list()!r})"
 
 
-class Vector(BaseVector[T]):
+class Vector[T](BaseVector[T]):
     """
     Vector class backed by all entries in a list.
     """
@@ -357,7 +354,7 @@ class Vector(BaseVector[T]):
             return self.from_function(entry, len(self))
 
 
-class BaseMatrix(ABC, Generic[T]):
+class BaseMatrix[T](ABC):
     """
     Matrix base class. The data layout is unspecified.
     """
@@ -383,7 +380,7 @@ class BaseMatrix(ABC, Generic[T]):
 
     @classmethod
     @abstractmethod
-    def from_function(
+    def from_function[R](
         cls, function: Callable[[int, int], R], shape: tuple[int, int]
     ) -> BaseMatrix[R]:
         raise NotImplementedError
@@ -397,7 +394,7 @@ class BaseMatrix(ABC, Generic[T]):
         return cls.full(shape, 1)
 
     @classmethod
-    def full(cls, shape: tuple[int, int], x: R) -> BaseMatrix[R]:
+    def full[R](cls, shape: tuple[int, int], x: R) -> BaseMatrix[R]:
         return cls.from_function(lambda i, j: x, shape)
 
     @classmethod
@@ -573,7 +570,7 @@ class BaseMatrix(ABC, Generic[T]):
         return self._right_op(other, or_)
 
     @abstractmethod
-    def map(self, f: Callable[[T], R]) -> BaseMatrix[R]:
+    def map[R](self, f: Callable[[T], R]) -> BaseMatrix[R]:
         raise NotImplementedError
 
     def __neg__(self) -> BaseMatrix[T]:
@@ -641,7 +638,7 @@ class BaseMatrix(ABC, Generic[T]):
         return type(self).__name__ + f"({self.as_list()!r})"
 
 
-class Matrix(BaseMatrix[T]):
+class Matrix[T](BaseMatrix[T]):
     """
     Matrix class backed by a single list of all entries arranged in row-major
     order.
@@ -923,7 +920,7 @@ class Matrix(BaseMatrix[T]):
             return NotImplemented
 
 
-class LUDecomposition(Generic[T]):
+class LUDecomposition[T]:
     _lu: BaseMatrix[T]
     _idx: list[int]
 

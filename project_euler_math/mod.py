@@ -1,12 +1,10 @@
 from operator import add, mul, neg, pos, sub
-from typing import Callable, Generic, TypeVar
+from typing import Callable
 
 from project_euler_math.ntheory import gcd, mod_inverse
 
-T = TypeVar("T")
 
-
-class Mod(Generic[T]):
+class Mod[T]:
     """
     A residue class modulo a specified modulus.
     """

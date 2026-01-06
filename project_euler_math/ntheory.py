@@ -6,12 +6,9 @@ from math import gcd as mathgcd
 from math import inf, isqrt, prod
 from math import lcm as mathlcm
 from random import Random
-from typing import Callable, TypeVar
+from typing import Callable
 
 PRIME_FACTORS_END = 10000
-
-
-E = TypeVar("E")
 
 
 def inrt(n: int, k: int) -> int:
@@ -62,7 +59,7 @@ def is_square(n: int) -> bool:
     )
 
 
-def gcd(m: E, n: E) -> E:
+def gcd[E](m: E, n: E) -> E:
     """Return the non-negative greatest common divisor of integers `m` and
     `n`."""
     while n != 0:
@@ -70,7 +67,7 @@ def gcd(m: E, n: E) -> E:
     return m
 
 
-def lcm(m: E, n: E) -> E:
+def lcm[E](m: E, n: E) -> E:
     """Return the non-negative lowest common multiple of integers `m` and
     `n`."""
     if m == n == 0:
@@ -78,7 +75,7 @@ def lcm(m: E, n: E) -> E:
     return m * n // gcd(m, n)
 
 
-def bezout(m: E, n: E) -> tuple[E, E, E]:
+def bezout[E](m: E, n: E) -> tuple[E, E, E]:
     """Return the tuple ``(d, s, t)``, where ``d`` is the non-negative highest
     common factor of integers `m` and `n`, and ``d = s*m + t*n``."""
     d_old, d = m, n
@@ -92,7 +89,7 @@ def bezout(m: E, n: E) -> tuple[E, E, E]:
     return d_old, s_old, t_old
 
 
-def mod_inverse(a: E, mod: E) -> E | None:
+def mod_inverse[E](a: E, mod: E) -> E | None:
     """Return the inverse of `a` modulo `mod`. If no inverse exists (`a` and
     `mod` are not coprime), returns None."""
     # similar to bezout, but don't need to calculate t
@@ -107,7 +104,7 @@ def mod_inverse(a: E, mod: E) -> E | None:
     return s_old % mod
 
 
-def crt(residues: Sequence[E], mods: Sequence[E]) -> E:
+def crt[E](residues: Sequence[E], mods: Sequence[E]) -> E:
     """Compute the solution to the Chinese remainder theorem problem. `mods`
     should contain pairwise coprime numbers."""
     residue = residues[0]
@@ -118,7 +115,7 @@ def crt(residues: Sequence[E], mods: Sequence[E]) -> E:
     return residue
 
 
-def crt2(a: E, b: E, m: E, n: E) -> E:
+def crt2[E](a: E, b: E, m: E, n: E) -> E:
     """Compute the solution to the two number Chinese remainder theorem problem.
     `m` and `n` must be coprime."""
     inv = mod_inverse(m, n)
@@ -127,7 +124,7 @@ def crt2(a: E, b: E, m: E, n: E) -> E:
     return (a + (b - a) * m * inv) % (m * n)
 
 
-def crt2_noncoprime(a: E, b: E, m: E, n: E) -> E | None:
+def crt2_noncoprime[E](a: E, b: E, m: E, n: E) -> E | None:
     """Compute a solution to the two number Chinese remainder theorem problem.
     `m` and `n` need not be coprime. If there exists no solution, returns
     None."""

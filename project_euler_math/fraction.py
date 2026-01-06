@@ -1,12 +1,9 @@
 from fractions import Fraction as MathFraction
-from typing import Generic, TypeVar
 
 from project_euler_math.ntheory import gcd
 
-E = TypeVar("E")
 
-
-class Fraction(Generic[E]):
+class Fraction[E]:
     """
     A fraction composed of a pair of elements of a Bezout domain.
     """
