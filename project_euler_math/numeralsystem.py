@@ -32,7 +32,6 @@ class NumeralSystem:
     def __init__(
         self, symbols: str | None = None, base: int | None = None, chunksize: int = 1
     ) -> None:
-
         if symbols is None and base is None:
             raise ValueError
 

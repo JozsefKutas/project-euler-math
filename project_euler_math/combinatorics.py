@@ -1,5 +1,5 @@
 from itertools import accumulate, count, product
-from math import prod, factorial, isqrt, comb
+from math import comb, factorial, isqrt, prod
 from typing import Iterator, Sequence
 
 from project_euler_math.matrix import Matrix, Vector

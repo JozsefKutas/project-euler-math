@@ -100,7 +100,7 @@ class RepeatingDecimal:
             self._initial = "".join(map(str, initial))
 
             if not isinstance(value[2], int):
-                raise ValueError("The third value in the tuple must be an " "integer.")
+                raise ValueError("The third value in the tuple must be an integer.")
             self._exponent = value[2]
 
             if not all(isinstance(d, int) and 0 <= d <= 9 for d in value[3]):

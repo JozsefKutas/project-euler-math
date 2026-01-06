@@ -37,7 +37,6 @@ class Fraction(Generic[E]):
         p: E | Fraction[E] | MathFraction = 0,
         q: E | Fraction[E] | MathFraction = 1,
     ) -> None:
-
         if isinstance(p, (Fraction, MathFraction)):
             if isinstance(q, (Fraction, MathFraction)):
                 self._p = p.numerator * q.denominator

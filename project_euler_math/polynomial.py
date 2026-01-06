@@ -1,6 +1,6 @@
 from functools import reduce
 from math import inf
-from typing import TypeVar, Generic, Iterable, Callable
+from typing import Callable, Generic, Iterable, TypeVar
 
 T = TypeVar("T")
 R = TypeVar("R")

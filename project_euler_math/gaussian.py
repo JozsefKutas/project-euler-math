@@ -29,7 +29,6 @@ class Gaussian(Complex):
         return self._y
 
     def __init__(self, x: int | Gaussian = 0, y: int | Gaussian = 0) -> None:
-
         self._x = 0
         self._y = 0
 

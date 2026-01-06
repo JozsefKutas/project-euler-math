@@ -1,6 +1,6 @@
 from itertools import chain, cycle
-from math import prod, gcd, isqrt
-from typing import Sequence, Iterator
+from math import gcd, isqrt, prod
+from typing import Iterator, Sequence
 
 from project_euler_math.ntheory import factorisation
 
@@ -32,7 +32,6 @@ class ContinuedFraction:
         initial: ContinuedFraction | Sequence[int],
         repeating: Sequence[int] | None = None,
     ) -> None:
-
         if isinstance(initial, ContinuedFraction):
             if repeating is None:
                 self._initial = list(initial.initial)

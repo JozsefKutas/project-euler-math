@@ -1,7 +1,7 @@
-from operator import add, sub, mul, neg, pos
-from typing import TypeVar, Generic, Callable
+from operator import add, mul, neg, pos, sub
+from typing import Callable, Generic, TypeVar
 
-from project_euler_math.ntheory import mod_inverse, gcd
+from project_euler_math.ntheory import gcd, mod_inverse
 
 T = TypeVar("T")
 

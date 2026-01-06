@@ -2,28 +2,28 @@ from abc import ABC, abstractmethod
 from itertools import product
 from math import prod
 from operator import (
-    lt,
-    le,
+    add,
+    and_,
     eq,
-    ne,
+    floordiv,
     ge,
     gt,
-    add,
-    sub,
-    mul,
-    truediv,
-    floordiv,
-    mod,
-    lshift,
-    rshift,
-    and_,
-    xor,
-    or_,
-    neg,
-    pos,
     invert,
+    le,
+    lshift,
+    lt,
+    mod,
+    mul,
+    ne,
+    neg,
+    or_,
+    pos,
+    rshift,
+    sub,
+    truediv,
+    xor,
 )
-from typing import TypeVar, Iterator, Generic, Iterable, Callable, Sequence
+from typing import Callable, Generic, Iterable, Iterator, Sequence, TypeVar
 
 T = TypeVar("T")
 R = TypeVar("R")
@@ -301,7 +301,7 @@ class Vector(BaseVector[T]):
         if isinstance(other, Vector):
             if len(self) != len(other):
                 raise ValueError(
-                    "vector shapes do not match: " "{len(self)}, {len(other)}"
+                    "vector shapes do not match: {len(self)}, {len(other)}"
                 )
             return self._create(list(map(op, self, other)))
 
@@ -318,7 +318,7 @@ class Vector(BaseVector[T]):
         if isinstance(other, BaseVector):
             if len(self) != len(other):
                 raise ValueError(
-                    "vector shapes are not compatible: " f"{len(self)}, {len(other)}"
+                    f"vector shapes are not compatible: {len(self)}, {len(other)}"
                 )
 
             return sum(map(mul, self._vec, other))
@@ -682,7 +682,7 @@ class Matrix(BaseMatrix[T]):
                 n = len(mat[0]) if mat else 0
                 self._shape = (m, n)
             except TypeError:
-                raise TypeError("mat must be an matrix or a sequence of " "sequences")
+                raise TypeError("mat must be an matrix or a sequence of sequences")
 
             for i, row in enumerate(mat):
                 if len(row) != n:
@@ -702,7 +702,7 @@ class Matrix(BaseMatrix[T]):
         nrows = tup[0].nrows
         for mat in tup:
             if mat.ncols != nrows:
-                raise ValueError("matrices must all have the same" "number of rows")
+                raise ValueError("matrices must all have the samenumber of rows")
 
         ncols = sum(mat.ncols for mat in tup)
         hstack = [x for i in range(nrows) for mat in tup for x in mat.row_list(i)]
@@ -716,7 +716,7 @@ class Matrix(BaseMatrix[T]):
         ncols = tup[0].ncols
         for mat in tup:
             if mat.ncols != ncols:
-                raise ValueError("matrices must all have the same" "number of columns")
+                raise ValueError("matrices must all have the samenumber of columns")
 
         nrows = sum(mat.nrows for mat in tup)
         vstack = [x for mat in tup for x in mat]
@@ -786,7 +786,7 @@ class Matrix(BaseMatrix[T]):
         if not isinstance(key, tuple):
             raise TypeError("indices must be tuple, not " + type(key).__name__)
         if not len(key) == 2:
-            raise ValueError(f"indices have length 2")
+            raise ValueError("indices have length 2")
 
     def _resolve_i(self, i):
         nrows = self.nrows
@@ -886,7 +886,7 @@ class Matrix(BaseMatrix[T]):
         if isinstance(other, BaseMatrix):
             if self.shape != other.shape:
                 raise ValueError(
-                    "matrix shapes do not match: " f"{self.shape}, {other.shape}"
+                    f"matrix shapes do not match: {self.shape}, {other.shape}"
                 )
             mat = list(map(op, self, other))
             return self._create(mat, self.shape)
@@ -907,7 +907,7 @@ class Matrix(BaseMatrix[T]):
         if isinstance(other, BaseMatrix):
             if self.ncols != other.nrows:
                 raise ValueError(
-                    "matrix shapes are not compatible: " f"{self.shape}, {other.shape}"
+                    f"matrix shapes are not compatible: {self.shape}, {other.shape}"
                 )
 
             rows = [self.row_list(i) for i in range(self.nrows)]
@@ -923,7 +923,6 @@ class Matrix(BaseMatrix[T]):
 
 
 class LUDecomposition(Generic[T]):
-
     _lu: BaseMatrix[T]
     _idx: list[int]
 
@@ -998,7 +997,7 @@ class LUDecomposition(Generic[T]):
         elif isinstance(x, BaseMatrix):
             if not lu.ncols == x.nrows:
                 raise ValueError(
-                    "matrix shapes are not compatible: " f"{lu.shape}, {x.shape}"
+                    f"matrix shapes are not compatible: {lu.shape}, {x.shape}"
                 )
             for j in range(x.ncols):
                 x[:, j] = self._solve(x[:, j])
