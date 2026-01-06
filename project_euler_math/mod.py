@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from operator import add, sub, mul, neg, pos
 from typing import TypeVar, Generic, Callable
 

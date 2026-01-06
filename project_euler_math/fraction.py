@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from fractions import Fraction as MathFraction
 from typing import Generic, TypeVar
 

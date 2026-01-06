@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from functools import reduce
 from math import inf
 from typing import TypeVar, Generic, Iterable, Callable

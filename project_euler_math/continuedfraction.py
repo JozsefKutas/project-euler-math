@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from itertools import chain, cycle
 from math import prod, gcd, isqrt
 from typing import Sequence, Iterator
