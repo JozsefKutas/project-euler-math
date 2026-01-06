@@ -1,6 +1,7 @@
+from collections.abc import Iterable
 from functools import reduce
 from math import inf
-from typing import Callable, Generic, Iterable, TypeVar
+from typing import Callable, Generic, TypeVar
 
 T = TypeVar("T")
 R = TypeVar("R")

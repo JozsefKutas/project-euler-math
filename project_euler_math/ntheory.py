@@ -1,11 +1,12 @@
 from collections import Counter
+from collections.abc import Iterator, Mapping, Sequence
 from fractions import Fraction
 from itertools import accumulate, compress, count
 from math import gcd as mathgcd
 from math import inf, isqrt, prod
 from math import lcm as mathlcm
 from random import Random
-from typing import Callable, Iterator, Mapping, Sequence, TypeVar
+from typing import Callable, TypeVar
 
 PRIME_FACTORS_END = 10000
 

@@ -1,6 +1,6 @@
+from collections.abc import Iterator, Sequence
 from itertools import chain, cycle
 from math import gcd, isqrt, prod
-from typing import Iterator, Sequence
 
 from project_euler_math.ntheory import factorisation
 

@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from collections.abc import Iterable, Iterator, Sequence
 from itertools import product
 from math import prod
 from operator import (
@@ -23,7 +24,7 @@ from operator import (
     truediv,
     xor,
 )
-from typing import Callable, Generic, Iterable, Iterator, Sequence, TypeVar
+from typing import Callable, Generic, TypeVar
 
 T = TypeVar("T")
 R = TypeVar("R")

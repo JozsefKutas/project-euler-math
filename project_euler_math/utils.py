@@ -1,5 +1,6 @@
+from collections.abc import Iterable
 from itertools import chain, combinations, islice
-from typing import Callable, Iterable, TypeVar
+from typing import Callable, TypeVar
 
 T = TypeVar("T")
 K = TypeVar("K")
