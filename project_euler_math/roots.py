@@ -42,6 +42,10 @@ def secant(
 
     y0 = f(x0, *args)
     y1 = f(x1, *args)
+    if y0 * y1 >= 0.0:
+        msg = f"function sign is same at x0 and x1: f({x0}) = {y0}, f({x1}) = {y1}"
+        raise ValueError(msg)
+
     if abs(y0) < abs(y1):
         x1, x0 = x0, x1
         y1, y0 = y0, y1
@@ -58,29 +62,30 @@ def secant(
 
 def bisect(
     f: Callable[..., float],
-    a: float,
-    b: float,
+    x0: float,
+    x1: float,
     args: tuple = (),
     tol: float = 1e-8,
     maxiter: int = 100,
 ) -> float:
     """Searches for the root of `f` using bisection search."""
 
-    fa = f(a, *args)
-    fb = f(b, *args)
-    if fa * fb >= 0.0:
-        raise ValueError
+    y0 = f(x0, *args)
+    y1 = f(x1, *args)
+    if y0 * y1 >= 0.0:
+        msg = f"function sign is same at x0 and x1: f({x0}) = {y0}, f({x1}) = {y1}"
+        raise ValueError(msg)
 
     for _ in range(maxiter):
-        c = (a + b) / 2.0
-        fc = f(c, *args)
-        if fa * fc < 0.0:
-            b, fb = c, fc
+        x2 = (x0 + x1) / 2.0
+        y2 = f(x2, *args)
+        if y0 * y2 < 0.0:
+            x1, y1 = x2, y2
         else:
-            a, fa = c, fc
+            x0, y0 = x2, y2
 
-        if abs(a - b) < tol or fc == 0.0:
-            return c
+        if abs(x0 - x1) < tol or y2 == 0.0:
+            return x2
 
     raise RootError
 
