@@ -23,7 +23,7 @@ def newton_raphson(
 
         x0 = x1
 
-    raise ValueError
+    raise RootError
 
 
 def secant(
@@ -53,7 +53,7 @@ def secant(
         x1, x0 = x1 - y1 * (x1 - x0) / (y1 - y0), x1
         y0 = y1
 
-    raise ValueError
+    raise RootError
 
 
 def bisect(
@@ -82,4 +82,9 @@ def bisect(
         if abs(a - b) < tol or fc == 0.0:
             return c
 
-    raise ValueError
+    raise RootError
+
+
+class RootError(Exception):
+    def __init__(self) -> None:
+        super().__init__("root not found")

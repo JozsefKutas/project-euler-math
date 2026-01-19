@@ -62,7 +62,7 @@ def nelder_mead(
         xsum += x - xhi
         simplex[-1] = (x, y)
 
-    raise ValueError
+    raise OptimizationError
 
 
 def _nelder_mead_transform(x, xsum, factor):
@@ -70,3 +70,8 @@ def _nelder_mead_transform(x, xsum, factor):
     a = (1.0 - factor) / n
     b = factor - a
     return a * xsum + b * x
+
+
+class OptimizationError(Exception):
+    def __init__(self) -> None:
+        super().__init__("minimum not found")
