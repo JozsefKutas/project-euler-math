@@ -6,7 +6,7 @@ from math import gcd as mathgcd
 from math import inf, isqrt, prod
 from math import lcm as mathlcm
 from random import Random
-from typing import Callable
+from typing import Callable, Literal
 
 PRIME_FACTORS_END = 10000
 
@@ -956,24 +956,12 @@ def totient_sum(n: int) -> int:
     return big[1]
 
 
-def pythagorean_triples(bound: int, bound_perim: bool = False, primitive: bool = False):
+def pythagorean_triples(
+    bound: int, bound_type: Literal["c", "perim"] = "c", primitive: bool = False
+):
     """Generate Pythagorean triples up to the specified (inclusive) bound."""
 
-    if bound_perim:
-        for n in range(1, isqrt(bound // 4) + 1):
-            # if n is odd, m should be even, and vice versa
-            for m in range(n + 1, (isqrt(n * n + 2 * bound) - n) // 2 + 1, 2):
-                if gcd(m, n) == 1:
-                    a = m * m - n * n
-                    b = 2 * m * n
-                    c = m * m + n * n
-                    if primitive:
-                        yield a, b, c
-                    else:
-                        for k in range(1, bound // (a + b + c) + 1):
-                            yield k * a, k * b, k * c
-
-    else:
+    if bound_type == "c":
         for n in range(1, isqrt(bound // 2) + 1):
             # if n is odd, m should be even, and vice versa
             for m in range(n + 1, isqrt(bound - n * n) + 1, 2):
@@ -981,70 +969,89 @@ def pythagorean_triples(bound: int, bound_perim: bool = False, primitive: bool =
                     a = m * m - n * n
                     b = 2 * m * n
                     c = m * m + n * n
-                    if primitive:
-                        yield a, b, c
-                    else:
-                        for k in range(1, bound // c + 1):
+                    yield a, b, c
+                    if not primitive:
+                        for k in range(2, bound // c + 1):
                             yield k * a, k * b, k * c
 
-
-def eisenstein120_triples(
-    bound: int, bound_perim: bool = False, primitive: bool = False
-):
-    """Generate Eisentein triples with a 120 degree angle up to the specified
-    (inclusive) bound. See: http://www.geocities.ws/fredlb37/node9.html"""
-
-    if bound_perim:
-        for n in range(1, isqrt(bound // 6) + 1):
-            for m in range(n + 1, (isqrt(n * n + 8 * bound) - 3 * n) // 4 + 1):
-                if (m - n) % 3 != 0 and gcd(m, n) == 1:
+    elif bound_type == "perim":
+        for n in range(1, isqrt(bound // 4) + 1):
+            # if n is odd, m should be even, and vice versa
+            for m in range(n + 1, (isqrt(n * n + 2 * bound) - n) // 2 + 1, 2):
+                if gcd(m, n) == 1:
                     a = m * m - n * n
-                    b = 2 * m * n + n * n
-                    c = m * m + n * n + m * n
-                    if primitive:
-                        yield a, b, c
-                    else:
-                        for k in range(1, bound // (a + b + c) + 1):
+                    b = 2 * m * n
+                    c = m * m + n * n
+                    yield a, b, c
+                    if not primitive:
+                        for k in range(2, bound // (a + b + c) + 1):
                             yield k * a, k * b, k * c
 
     else:
+        raise ValueError("invalid bound type: " + bound_type)
+
+
+def eisenstein120_triples(
+    bound: int, bound_type: Literal["c", "perim"] = "c", primitive: bool = False
+):
+    """Generate Eisenstein triples with a 120 degree angle up to the specified
+    (inclusive) bound. See: http://www.geocities.ws/fredlb37/node9.html"""
+
+    if bound_type == "c":
         for n in range(1, isqrt(bound // 3) + 1):
             for m in range(n + 1, (isqrt(4 * bound - 3 * n * n) - n) // 2 + 1):
                 if (m - n) % 3 != 0 and gcd(m, n) == 1:
                     a = m * m - n * n
                     b = 2 * m * n + n * n
                     c = m * m + n * n + m * n
-                    if primitive:
-                        yield a, b, c
-                    else:
-                        for k in range(1, bound // c + 1):
+                    yield a, b, c
+                    if not primitive:
+                        for k in range(2, bound // c + 1):
                             yield k * a, k * b, k * c
+
+    elif bound_type == "perim":
+        for n in range(1, isqrt(bound // 6) + 1):
+            for m in range(n + 1, (isqrt(n * n + 8 * bound) - 3 * n) // 4 + 1):
+                if (m - n) % 3 != 0 and gcd(m, n) == 1:
+                    a = m * m - n * n
+                    b = 2 * m * n + n * n
+                    c = m * m + n * n + m * n
+                    yield a, b, c
+                    if not primitive:
+                        for k in range(2, bound // (a + b + c) + 1):
+                            yield k * a, k * b, k * c
+
+    else:
+        raise ValueError("invalid bound type: " + bound_type)
 
 
 def eisenstein60_triples(
-    bound: int, bound_perim: bool = False, primitive: bool = False
+    bound: int, bound_type: Literal["c", "perim"] = "c", primitive: bool = False
 ):
-    """Generate Eisentein triples with a 60 degree angle up to the specified
+    """Generate Eisenstein triples with a 60 degree angle up to the specified
     (inclusive) bound. See: http://www.geocities.ws/fredlb37/node9.html"""
 
-    if bound_perim:
-        if primitive:
+    if bound_type == "c":
+        if bound >= 1:
             yield 1, 1, 1
-        else:
-            for k in range(1, bound // 3 + 1):
+        if not primitive:
+            for k in range(2, bound + 1):
                 yield k, k, k
-        for a, b, c in eisenstein120_triples(bound, True, primitive):
+        for a, b, c in eisenstein120_triples(bound, bound_type, primitive):
+            yield a + b, b, c
+            yield a, a + b, c
+
+    elif bound_type == "perim":
+        if bound >= 3:
+            yield 1, 1, 1
+        if not primitive:
+            for k in range(2, bound // 3 + 1):
+                yield k, k, k
+        for a, b, c in eisenstein120_triples(bound, bound_type, primitive):
             if a + 2 * b + c <= bound:
                 yield a + b, b, c
             if 2 * a + b + c <= bound:
                 yield a, a + b, c
 
     else:
-        if primitive:
-            yield 1, 1, 1
-        else:
-            for k in range(1, bound + 1):
-                yield k, k, k
-        for a, b, c in eisenstein120_triples(bound, False, primitive):
-            yield a + b, b, c
-            yield a, a + b, c
+        raise ValueError("invalid bound type: " + bound_type)
