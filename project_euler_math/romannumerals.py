@@ -28,7 +28,8 @@ def roman2int(roman: str) -> int:
 
 
 def int2roman(n: int) -> str:
-    """Returns the minimal roman numeral representation of a non-negative integer."""
+    """Returns the minimal roman numeral representation of a non-negative
+    integer."""
     q, r = divmod(n, 1000)
     ans = [q * "M"]
     for s, m in _ROMAN2INT_LOOKUP.items():
