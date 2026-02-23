@@ -135,17 +135,6 @@ def crt2_noncoprime[E](a: E, b: E, m: E, n: E) -> E | None:
     return (a + q * m * s) % ((m * n) // d)
 
 
-def farey_sequence(n: int) -> list[Fraction]:
-    """Return the Farey sequence of order `n`."""
-    seq = [Fraction(0), Fraction(1)]
-    for q in range(2, n + 1):
-        for p in range(1, q):
-            if mathgcd(p, q) == 1:
-                seq.append(Fraction(p, q))
-    seq.sort()
-    return seq
-
-
 def left_farey(n: int, x: Fraction) -> Fraction:
     """Return the fraction to the left of `x` in the Farey sequence of order
     `n`."""
@@ -164,6 +153,15 @@ def right_farey(n: int, x: Fraction) -> Fraction:
     s += k * x.numerator
     t -= k * x.denominator
     return Fraction(s, -t)
+
+
+def farey_numbers(n: int) -> Iterator[Fraction]:
+    """Return the Farey sequence of order `n`."""
+    x = Fraction(0)
+    yield x
+    while x < 1:
+        x = right_farey(n, x)
+        yield x
 
 
 def jacobi(a: int, m: int) -> int:

@@ -1,49 +1,50 @@
 from collections import Counter
+from fractions import Fraction
 from itertools import product
-from math import gcd as mathgcd, lcm as mathlcm
+from math import gcd as mathgcd
+from math import lcm as mathlcm
 
 import pytest
 
 from project_euler_math.ntheory import (
-    inrt,
-    is_square,
-    gcd,
-    lcm,
     bezout,
-    mod_inverse,
     crt2,
     crt2_noncoprime,
-    farey_sequence,
-    left_farey,
-    right_farey,
-    jacobi,
-    tonelli_shanks,
-    is_prime,
     divisors,
     factorisation,
+    gcd,
+    inrt,
+    is_prime,
+    is_square,
+    jacobi,
+    lcm,
+    left_farey,
+    mobius,
+    mobius_list,
+    mod_inverse,
+    ndiv,
+    ndiv_list,
     omega,
     omega_list,
-    ndiv_list,
-    ndiv,
+    primality_iter,
+    primality_list,
+    prime_count,
+    prime_count_iter,
+    prime_count_list,
+    prime_sum,
+    primes_iter,
+    primes_list,
+    rad,
+    rad_list,
+    right_farey,
     sigma,
     sigma_list,
-    totient,
-    mobius,
-    rad,
     sum_squares,
-    primes_list,
-    primality_list,
-    totient_list,
-    mobius_list,
-    rad_list,
     sum_squares_list,
-    prime_count,
-    prime_sum,
+    tonelli_shanks,
+    totient,
+    totient_list,
     totient_sum,
-    primality_iter,
-    primes_iter,
-    prime_count_list,
-    prime_count_iter,
 )
 
 
@@ -110,14 +111,28 @@ def test_crt2_noncoprime():
 
 def test_farey_left():
     n = 100
-    seq = farey_sequence(n)
+
+    seq = [Fraction(0), Fraction(1)]
+    for q in range(2, n + 1):
+        for p in range(1, q):
+            if mathgcd(p, q) == 1:
+                seq.append(Fraction(p, q))
+    seq.sort()
+
     for i in range(1, len(seq)):
         assert left_farey(n, seq[i]) == seq[i - 1]
 
 
 def test_farey_right():
     n = 100
-    seq = farey_sequence(n)
+
+    seq = [Fraction(0), Fraction(1)]
+    for q in range(2, n + 1):
+        for p in range(1, q):
+            if mathgcd(p, q) == 1:
+                seq.append(Fraction(p, q))
+    seq.sort()
+
     for i in range(len(seq) - 1):
         assert right_farey(n, seq[i]) == seq[i + 1]
 
