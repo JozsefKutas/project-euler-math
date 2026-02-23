@@ -1,9 +1,21 @@
+from collections import deque
 from collections.abc import Iterable
-from itertools import chain, combinations
+from itertools import chain, combinations, islice
 from typing import Callable, Iterator
 
 
-def rotations[T](iterable: Iterable[T]) -> Iterable[tuple[T, ...]]:
+def sliding_window[T](iterable: Iterable[T], n: int) -> Iterator[tuple[T, ...]]:
+    """Collect data into overlapping fixed-length chunks or blocks."""
+    # taken from https://docs.python.org/3/library/itertools.html
+    # sliding_window('ABCDEFG', 3) → ABC BCD CDE DEF EFG
+    iterator = iter(iterable)
+    window = deque(islice(iterator, n - 1), maxlen=n)
+    for x in iterator:
+        window.append(x)
+        yield tuple(window)
+
+
+def rotations[T](iterable: Iterable[T]) -> Iterator[tuple[T, ...]]:
     """Generate rotations of a finite iterable."""
     tup = tuple(iterable)
     for i in range(len(tup)):
@@ -11,8 +23,8 @@ def rotations[T](iterable: Iterable[T]) -> Iterable[tuple[T, ...]]:
 
 
 def powerset[T](
-    iterable: Iterable[T], nonempty: bool = False, proper: bool = False
-) -> Iterable[tuple[T, ...]]:
+        iterable: Iterable[T], nonempty: bool = False, proper: bool = False
+) -> Iterator[tuple[T, ...]]:
     """Return the powerset of a finite iterable."""
     tup = tuple(iterable)
     rng = range(1 if nonempty else 0, len(tup) + (1 if proper else 0))
@@ -20,9 +32,9 @@ def powerset[T](
 
 
 def groupby[T, K, V](
-    iterable: Iterable[T],
-    key: Callable[[T], K],
-    downstream: Callable[[list[T]], V] | None = None,
+        iterable: Iterable[T],
+        key: Callable[[T], K],
+        downstream: Callable[[list[T]], V] | None = None,
 ) -> dict[K, list[T]] | dict[K, V]:
     """Return a dictionary containing the elements of an iterable grouped by a
     key function."""
